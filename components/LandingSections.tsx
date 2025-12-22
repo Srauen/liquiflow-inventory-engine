@@ -108,7 +108,7 @@ export const StateExplanationSection: React.FC = () => (
     <SmoothSection>
       <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-8 text-white">Decision Integrity</h2>
       <p className="text-xl text-gray-400 leading-relaxed font-medium mb-12">
-        “All recommendations are explicitly labeled as Live, Simulated, or Forecasted. Liquidora never mixes decision states.”
+        “All recommendations are explicitly labeled as Live, Simulated, or Forecasted. LiquiFlow never mixes decision states.”
       </p>
       <div className="flex flex-wrap justify-center gap-6 opacity-40">
         <div className="flex items-center gap-2">
@@ -264,7 +264,7 @@ export const WalkthroughSection: React.FC = () => {
       <div className="container mx-auto max-w-7xl">
         <SmoothSection className="text-center mb-24 px-4">
            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6 text-white leading-tight">Engineered for Precision</h2>
-           <p className="text-gray-400 text-lg max-w-2xl mx-auto font-medium">A guided view into the Liquidora interface. Professional controls for enterprise decision making.</p>
+           <p className="text-gray-400 text-lg max-w-2xl mx-auto font-medium">A guided view into the LiquiFlow interface. Professional controls for enterprise decision making.</p>
         </SmoothSection>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
@@ -328,7 +328,7 @@ export const DecisionStateSection: React.FC = () => {
              <span className="text-neon-blue font-mono text-[10px] tracking-[0.4em] uppercase mb-8 block font-bold">SIMULATION CORE</span>
              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-8 text-white leading-[1.1]">Predict Before <br/>You Commit</h2>
              <p className="text-lg text-gray-400 leading-relaxed mb-12 font-medium max-w-lg">
-                Evaluate outcomes before commitment. Liquidora separates live operational data from sandbox scenarios, allowing for zero-risk price experimentation.
+                Evaluate outcomes before commitment. LiquiFlow separates live operational data from sandbox scenarios, allowing for zero-risk price experimentation.
              </p>
              <div className="flex items-center gap-4 p-1.5 bg-white/5 border border-white/10 rounded w-fit">
                 <button 
@@ -595,7 +595,7 @@ export const FinalCTASection: React.FC<{onNavigate: (p: PageView) => void}> = ({
        <div className="container mx-auto relative z-10 max-w-4xl">
           <SmoothSection>
             <h2 className="text-4xl md:text-7xl font-bold mb-16 tracking-tight text-white leading-tight">
-               Liquidora. <br/>
+               LiquiFlow. <br/>
                Ready to flow?
             </h2>
             <button 
