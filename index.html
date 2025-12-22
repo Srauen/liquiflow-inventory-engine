@@ -15,7 +15,8 @@
       };
 
       // Shim process.env for third-party libraries that might expect it
-      window.process = { env: { NODE_ENV: 'production' } };
+      // This is the CRITICAL fix for the black screen issue
+      window.process = { env: { NODE_ENV: 'production', API_KEY: '' } };
       
       tailwind.config = {
         theme: {
@@ -122,6 +123,7 @@
     "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
     "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.25",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
     "react/": "https://esm.sh/react@^19.2.3/",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
   }

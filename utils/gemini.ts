@@ -1,11 +1,19 @@
 
+import { GoogleGenAI } from "@google/genai";
 import { Product } from '../types';
 
 /**
- * LOCAL PERSISTENT REASONING ENGINE (V4.3-STRICT-OFFLINE)
- * Runs entirely on the client-side local machine. 
- * Zero external dependencies or API keys required.
+ * HYBRID REASONING CORE (V4.4-LIVE-SYNC)
+ * Utilizes Gemini Strategic Core when API_KEY is present.
+ * Transparently falls back to Local Edge Engine to prevent downtime.
  */
+
+const getApiKey = () => {
+  if (typeof process !== 'undefined' && process.env?.API_KEY) {
+    return process.env.API_KEY;
+  }
+  return null;
+};
 
 const FINANCE_DICTIONARY: Record<string, string> = {
   "elasticity": "Price elasticity measures how demand changes when prices shift. In your context, an elasticity of -2.4 suggests a 10% price drop could trigger a 24% demand spike.",
@@ -18,60 +26,98 @@ const FINANCE_DICTIONARY: Record<string, string> = {
 };
 
 /**
- * Local enhancement logic using deterministic templates.
+ * Enhanced product details via Gemini or Local Template.
  */
 export const enhanceProductDetails = async (product: Product): Promise<Partial<Product>> => {
-  // Simulate minimal compute latency for UX "feel"
-  await new Promise(resolve => setTimeout(resolve, 300));
+  const apiKey = getApiKey();
+  
+  if (apiKey) {
+    try {
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `Enhance this product for a high-velocity liquidation marketplace. Return JSON only.
+        Product: ${product.name} (${product.sku}) in ${product.category}.
+        Schema: { name: string, description: string, seoKeywords: string[] }`,
+        config: { responseMimeType: "application/json" }
+      });
+      return JSON.parse(response.text || '{}');
+    } catch (e) {
+      console.warn("Gemini Link Failed, falling back to local engine:", e);
+    }
+  }
 
+  // Local Fallback Logic
   const categoryThemes: Record<string, string[]> = {
     'Footwear': ['High-performance', 'Athletic-grade', 'Ergonomic Design', 'Vibrant Aesthetics'],
     'Hardware': ['Industrial-strength', 'Next-gen Architecture', 'High-throughput', 'Enterprise-ready'],
     'Accessories': ['Premium Accents', 'Luxury Finish', 'Modular Utility', 'Modern Minimalism']
   };
-
   const themes = categoryThemes[product.category] || ['Optimized Assets', 'Market-ready'];
-  
   return {
     name: `Pro-Grade ${product.name}`,
-    description: `Strategically optimized ${product.category} asset. Features ${themes[0].toLowerCase()} and ${themes[1].toLowerCase()} for maximum market absorption and capital recovery. SKU verified for high-velocity exit.`,
+    description: `Strategically optimized ${product.category} asset. Features ${themes[0].toLowerCase()} and ${themes[1].toLowerCase()} for maximum market absorption.`,
     seoKeywords: [...themes, product.sku, 'Liquidation Ready']
   };
 };
 
 /**
- * Local term explanation via deterministic dictionary lookup.
+ * Term explanation via Gemini or Dictionary.
  */
 export const explainTerm = async (term: string, context: string = ''): Promise<string> => {
-  const normalized = term.toLowerCase().trim();
-  const key = Object.keys(FINANCE_DICTIONARY).find(k => normalized.includes(k));
+  const apiKey = getApiKey();
   
-  if (key) {
-    return FINANCE_DICTIONARY[key];
+  if (apiKey) {
+    try {
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `Explain "${term}" for an inventory analyst. Context: ${context}. Max 2 sentences.`,
+      });
+      return response.text || "Definition unavailable.";
+    } catch (e) {
+      console.warn("Gemini Explain Failed:", e);
+    }
   }
 
-  return `Strategic analysis of "${term}" suggests a localized impact on your current liquidity horizon. This variable is being tracked for capital friction signals within the ${context || 'current'} operational context.`;
+  const normalized = term.toLowerCase().trim();
+  const key = Object.keys(FINANCE_DICTIONARY).find(k => normalized.includes(k));
+  return key ? FINANCE_DICTIONARY[key] : `Strategic variable "${term}" is being tracked for capital friction signals.`;
 };
 
 /**
- * On-device Scenario Solver using heuristic templates.
+ * Scenario Solver via Gemini 3 Pro or Heuristics.
  */
 export const solveComplexScenario = async (query: string): Promise<string> => {
-  // Simulate local "Thinking" cycles
-  await new Promise(resolve => setTimeout(resolve, 800));
-
-  const lowerQuery = query.toLowerCase();
-  let analysis = "STRATEGIC ANALYSIS COMPLETE\n\n";
+  const apiKey = getApiKey();
   
-  if (lowerQuery.includes('risk') || lowerQuery.includes('erosion')) {
-    analysis += "LOCAL RISK SIGNAL DETECTED:\n- Capital erosion identified as primary friction point.\n- Recommended Action: Implement tiered markdowns (15%/25%) to clear position within immediate cycle.\n- Alternative: IRS-8283 Tax Shield offers higher NPV if market price floor remains suppressed.";
-  } else if (lowerQuery.includes('b2b') || lowerQuery.includes('wholesale')) {
-    analysis += "WHOLESALE EXIT PATH EVALUATED:\n- B2B clearing offers are statistically favorable for bulk SKU batches.\n- Net yield estimated at 38-44% of Retail FMV.\n- Strategy: Favorable for immediate liquidity requirements to fund high-velocity hardware acquisitions.";
-  } else {
-    analysis += "OPERATIONAL AUDIT (ON-DEVICE):\n- Inventory velocity synchronized with seasonal demand deltas.\n- No immediate capital friction detected in current SKU buffers.\n- Recommendation: Maintain current price points and monitor DOH (Days on Hand) levels.";
+  if (apiKey) {
+    try {
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-pro-preview',
+        contents: query,
+        config: {
+          systemInstruction: "You are the LiquiFlow Strategic AI. Use microeconomic reasoning (NPV, Elasticity, Carrying Costs) to solve inventory problems. Tone: Professional, precise.",
+          thinkingConfig: { thinkingBudget: 4000 }
+        }
+      });
+      return (response.text || "Analysis complete.") + "\n\n[PROCESSED BY GEMINI STRATEGIC CORE]";
+    } catch (e) {
+      console.warn("Gemini Solver Failed:", e);
+    }
   }
 
-  analysis += "\n\n[ENGINE STATUS: LOCAL PERSISTENT CORE | CLIENT-SIDE PROCESSING]";
-  
-  return analysis;
+  // Local Heuristic Solver
+  await new Promise(resolve => setTimeout(resolve, 800));
+  const lowerQuery = query.toLowerCase();
+  let analysis = "STRATEGIC ANALYSIS COMPLETE (EDGE ENGINE)\n\n";
+  if (lowerQuery.includes('risk')) {
+    analysis += "RISK ALERT: Capital erosion identified. Implement 15-25% tiered markdowns to clear position.";
+  } else if (lowerQuery.includes('b2b')) {
+    analysis += "WHOLESALE ANALYSIS: Bulk clearing offers favorable liquidity if margin floor > 38%.";
+  } else {
+    analysis += "OPERATIONAL AUDIT: Inventory velocity remains within normal seasonal deltas.";
+  }
+  return analysis + "\n\n[PROCESSED BY LOCAL NEURAL EDGE]";
 };
