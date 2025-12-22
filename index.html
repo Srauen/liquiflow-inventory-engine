@@ -8,6 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
+      // Shim process.env to avoid ReferenceErrors in browser environments
+      // This is necessary because Vite/React code often assumes 'process' exists for env vars
+      window.process = { env: { API_KEY: '' } };
+      
       tailwind.config = {
         theme: {
           extend: {
@@ -98,8 +102,7 @@
     "react/": "https://aistudiocdn.com/react@^19.2.1/",
     "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
-    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.25",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0"
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.25"
   }
 }
 </script>

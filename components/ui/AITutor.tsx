@@ -87,8 +87,8 @@ export const AITutor: React.FC = () => {
           <GlassCard glowColor="blue" className="bg-black/95 backdrop-blur-2xl border-white/10 shadow-2xl">
             <div className="flex justify-between items-start mb-3">
               <div className="flex items-center gap-2 text-neon-blue">
-                <GraduationCap className="w-5 h-5" />
-                <span className="font-black text-[10px] uppercase tracking-widest">Strategic Advisor</span>
+                <Cpu className="w-5 h-5" />
+                <span className="font-black text-[10px] uppercase tracking-widest">Neural Logic Core</span>
               </div>
               <button onClick={closeTutor} className="text-gray-600 hover:text-white">
                 <X className="w-4 h-4" />
@@ -99,11 +99,11 @@ export const AITutor: React.FC = () => {
               {loading ? (
                 <div className="flex items-center justify-center py-4 gap-3 text-neon-blue">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-black">Connecting Live Core...</span>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-black">Accessing Edge Memory...</span>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <p className="font-mono text-[9px] text-gray-600 uppercase tracking-widest">TERM_DEF: "{selection?.text}"</p>
+                  <p className="font-mono text-[9px] text-gray-600 uppercase tracking-widest">LOCAL_DEFINITION: "{selection?.text}"</p>
                   <p className="animate-in fade-in text-sm">{explanation}</p>
                 </div>
               )}
@@ -111,8 +111,8 @@ export const AITutor: React.FC = () => {
             
             {!loading && (
               <div className="mt-4 pt-3 border-t border-white/5 text-[8px] text-gray-700 flex justify-between uppercase font-mono font-black tracking-widest">
-                <span>Gemini API Node</span>
-                <span className="text-neon-emerald">State: Synced</span>
+                <span>Local Logic v4.2</span>
+                <span className="text-neon-emerald">Ready</span>
               </div>
             )}
           </GlassCard>
