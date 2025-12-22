@@ -143,7 +143,7 @@ const LiquidityCoreBackground: React.FC = () => {
 export const Auth: React.FC<AuthProps> = ({ onLogin, onBack }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [step, setStep] = useState(1);
-  const [email, setEmail] = useState('demo@liquiflow.ai');
+  const [email, setEmail] = useState('demo@liquidora.ai');
   const [password, setPassword] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 

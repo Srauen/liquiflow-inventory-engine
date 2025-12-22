@@ -19,21 +19,6 @@ export interface Product {
   status: 'active' | 'at-risk' | 'liquidating' | 'donated';
 }
 
-export interface RecommendationMeta {
-  inputs: string[];
-  alternatives: string[];
-  primaryRisk: string;
-  confidence: 'High (Dense Data)' | 'Medium (Market Variance)' | 'Low (Insufficient Signal)';
-  noActionRecommended?: boolean;
-}
-
-export interface AuditEntry {
-  id: string;
-  action: string;
-  timestamp: string;
-  assumptions: string[];
-}
-
 export interface SimulationScenario {
   id: string;
   name: string;
@@ -73,6 +58,7 @@ export interface UserPreferences {
   themeColor: 'blue' | 'pink' | 'emerald' | 'violet';
 }
 
+// Added Badge interface to support user achievements
 export interface Badge {
   id: string;
   name: string;
@@ -81,6 +67,7 @@ export interface Badge {
   description: string;
 }
 
+// Added Lesson interface for the academy section
 export interface Lesson {
   id: string;
   title: string;
@@ -91,6 +78,7 @@ export interface Lesson {
   content: string;
 }
 
+// Updated UserProfile with gamification metrics used in mock data and components
 export interface UserProfile {
   id: string;
   name: string;

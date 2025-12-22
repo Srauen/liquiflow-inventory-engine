@@ -1,77 +1,42 @@
 
+// LiquiFlow Deterministic Inventory Decision Engine
+// Local logic core for capital efficiency analysis.
 import { Product } from '../types';
 
-/**
- * LOCAL PERSISTENT REASONING ENGINE (V4.3-STRICT-OFFLINE)
- * Runs entirely on the client-side local machine. 
- * Zero external dependencies or API keys required.
- */
-
-const FINANCE_DICTIONARY: Record<string, string> = {
-  "elasticity": "Price elasticity measures how demand changes when prices shift. In your context, an elasticity of -2.4 suggests a 10% price drop could trigger a 24% demand spike.",
-  "liquidity": "The ease with which an asset can be converted into cash without affecting its market price. For you, this means exiting SKU positions quickly.",
-  "npv": "Net Present Value. It calculates the current value of a future stream of payments from your inventory liquidation.",
-  "carrying cost": "The total cost of holding inventory, including storage, insurance, and the opportunity cost of tied-up capital.",
-  "inventory turnover": "A ratio showing how many times a company has sold and replaced inventory during a specific period.",
-  "markdown": "A permanent reduction from the original selling price, used to drive velocity on stagnant SKUs.",
-  "sku": "Stock Keeping Unit. A unique identifier for each distinct product and service that can be purchased in your system."
-};
-
-/**
- * Local enhancement logic using deterministic templates.
- */
 export const enhanceProductDetails = async (product: Product): Promise<Partial<Product>> => {
-  // Simulate minimal compute latency for UX "feel"
-  await new Promise(resolve => setTimeout(resolve, 300));
+  // Simulate logic core latency
+  await new Promise(r => setTimeout(r, 900));
 
-  const categoryThemes: Record<string, string[]> = {
-    'Footwear': ['High-performance', 'Athletic-grade', 'Ergonomic Design', 'Vibrant Aesthetics'],
-    'Hardware': ['Industrial-strength', 'Next-gen Architecture', 'High-throughput', 'Enterprise-ready'],
-    'Accessories': ['Premium Accents', 'Luxury Finish', 'Modular Utility', 'Modern Minimalism']
+  const enhancedNames: Record<string, string> = {
+    'CyberRunner 2077 Sneakers': 'CyberRunner 2077 Ultra-Lite Performance [Liquidity Optimized]',
+    'Holo-Visor Gen 3': 'Vision-X Holo-Visor Gen 3: High-Velocity Edition',
+    'Quantum Core Processor': 'QuantumCore X1: Neural Processing Asset [Decision Engine Optimized]'
   };
 
-  const themes = categoryThemes[product.category] || ['Optimized Assets', 'Market-ready'];
-  
-  return {
-    name: `Pro-Grade ${product.name}`,
-    description: `Strategically optimized ${product.category} asset. Features ${themes[0].toLowerCase()} and ${themes[1].toLowerCase()} for maximum market absorption and capital recovery. SKU verified for high-velocity exit.`,
-    seoKeywords: [...themes, product.sku, 'Liquidation Ready']
-  };
+  const name = enhancedNames[product.name] || `${product.name} (Ecosystem Optimized)`;
+  const description = `Strategic Title Update: Metadata realignment is projected to reduce Days on Hand (DOH) by 12% via increased marketplace search visibility and buyer alignment. Optimized for LiquiFlow exit protocols.`;
+  const seoKeywords = [product.category.toLowerCase(), 'capital-efficient', 'liquiflow-optimized', product.sku.toLowerCase()];
+
+  return { name, description, seoKeywords };
 };
 
-/**
- * Local term explanation via deterministic dictionary lookup.
- */
 export const explainTerm = async (term: string, context: string = ''): Promise<string> => {
+  await new Promise(r => setTimeout(r, 500));
+  const entries: Record<string, string> = {
+    "elasticity": "Measures demand sensitivity to price shifts. LiquiFlow uses this to calculate the 'Golden Discount'—the price floor that maximizes recovery value.",
+    "liquidity score": "A proprietary consolidated metric (0-100) that factors Velocity, Days on Hand (DOH), and Margin into a single asset health indicator.",
+    "sandbox": "An isolated decision environment used to simulate price and stock changes against production data without impacting live operations.",
+    "doh": "Days on Hand (DOH). Represents how long capital remains frozen in a specific SKU. Lowering DOH increases capital efficiency."
+  };
   const normalized = term.toLowerCase().trim();
-  const key = Object.keys(FINANCE_DICTIONARY).find(k => normalized.includes(k));
+  const entry = Object.entries(entries).find(([key]) => normalized.includes(key));
   
-  if (key) {
-    return FINANCE_DICTIONARY[key];
-  }
-
-  return `Strategic analysis of "${term}" suggests a localized impact on your current liquidity horizon. This variable is being tracked for capital friction signals within the ${context || 'current'} operational context.`;
+  return entry ? entry[1] : `The Concept of '${term}' is essential for maintaining capital-efficient inventory. High scores in this parameter correlate directly with faster asset turn-rates.`;
 };
 
-/**
- * On-device Scenario Solver using heuristic templates.
- */
 export const solveComplexScenario = async (query: string): Promise<string> => {
-  // Simulate local "Thinking" cycles
-  await new Promise(resolve => setTimeout(resolve, 800));
-
-  const lowerQuery = query.toLowerCase();
-  let analysis = "STRATEGIC ANALYSIS COMPLETE\n\n";
-  
-  if (lowerQuery.includes('risk') || lowerQuery.includes('erosion')) {
-    analysis += "LOCAL RISK SIGNAL DETECTED:\n- Capital erosion identified as primary friction point.\n- Recommended Action: Implement tiered markdowns (15%/25%) to clear position within immediate cycle.\n- Alternative: IRS-8283 Tax Shield offers higher NPV if market price floor remains suppressed.";
-  } else if (lowerQuery.includes('b2b') || lowerQuery.includes('wholesale')) {
-    analysis += "WHOLESALE EXIT PATH EVALUATED:\n- B2B clearing offers are statistically favorable for bulk SKU batches.\n- Net yield estimated at 38-44% of Retail FMV.\n- Strategy: Favorable for immediate liquidity requirements to fund high-velocity hardware acquisitions.";
-  } else {
-    analysis += "OPERATIONAL AUDIT (ON-DEVICE):\n- Inventory velocity synchronized with seasonal demand deltas.\n- No immediate capital friction detected in current SKU buffers.\n- Recommendation: Maintain current price points and monitor DOH (Days on Hand) levels.";
-  }
-
-  analysis += "\n\n[ENGINE STATUS: LOCAL PERSISTENT CORE | CLIENT-SIDE PROCESSING]";
-  
-  return analysis;
+  await new Promise(r => setTimeout(r, 2000));
+  return "Liquidity Sandbox™ Result: Current carrying costs for this SKU cluster exceed recovery potential by 18% over the next 60 days. Recommended Action: Execute immediate tiered markdown (12%) to prioritize cash-on-hand over holding for peak demand.";
 };
+
+export const getLiveMarketPulse = async () => []; // Ticker disabled as per strategic refactor

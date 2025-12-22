@@ -6,7 +6,7 @@ import {
   ScanLine, DollarSign, Activity, Target, Layers, 
   Search, Info, Database, Box, User, Briefcase, 
   FlaskConical, CheckCircle, Clock, TrendingUp, Cpu,
-  Network, ArrowUpRight, BarChart3, Binary, Calendar, RefreshCw
+  Network, ArrowUpRight, BarChart3, Binary
 } from 'lucide-react';
 import { PageView } from '../App';
 import { GlassCard } from './ui/GlassCard';
@@ -22,118 +22,6 @@ export const SmoothSection: React.FC<{ children: React.ReactNode; className?: st
   >
     {children}
   </motion.div>
-);
-
-export const DecisionComputationSection: React.FC = () => (
-  <section className="py-48 px-6 container mx-auto max-w-6xl border-t border-white/5">
-    <SmoothSection className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
-      <div>
-        <span className="text-neon-blue font-mono text-[10px] tracking-[0.4em] uppercase mb-8 block font-bold">METHODOLOGY</span>
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-10 text-white leading-tight">How Liquidity Decisions Are Computed</h2>
-        <div className="space-y-8">
-          {[
-            { title: "Deterministic Elasticity", desc: "Modeling price floors against real-time market absorption data." },
-            { title: "SKU Aging Curves", desc: "Projecting carrying cost acceleration versus remaining asset life." },
-            { title: "Channel Constraints", desc: "Evaluating delisting latency and multi-platform clearing fees." },
-            { title: "Risk-Adjusted Recovery", desc: "Calculating the intersection of speed and principal retention." }
-          ].map((item, i) => (
-            <div key={i} className="flex gap-6">
-              <div className="text-gray-600 font-mono text-xs pt-1">0{i+1}</div>
-              <div>
-                <h4 className="text-white font-bold text-lg mb-1">{item.title}</h4>
-                <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="relative p-1 bg-white/5 rounded-2xl border border-white/10">
-        <div className="bg-void rounded-xl p-8 overflow-hidden aspect-square flex flex-col justify-center gap-12">
-          <div className="flex justify-between items-center px-4">
-             <div className="text-center">
-                <Database className="w-10 h-10 text-gray-500 mx-auto mb-2" />
-                <span className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">Inputs</span>
-             </div>
-             <ArrowRight className="w-6 h-6 text-gray-800" />
-             <div className="w-24 h-24 bg-white/5 border border-white/20 rounded-full flex items-center justify-center relative">
-                <RefreshCw className="w-10 h-10 text-neon-blue animate-spin-slow" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-neon-emerald rounded-full" />
-             </div>
-             <ArrowRight className="w-6 h-6 text-gray-800" />
-             <div className="text-center">
-                <TrendingUp className="w-10 h-10 text-gray-500 mx-auto mb-2" />
-                <span className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">Outcome</span>
-             </div>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded p-4 text-center">
-            <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest block mb-2">Decision Engine State</span>
-            <div className="flex gap-1 justify-center">
-               {[1,2,3,4,5,6].map(i => <div key={i} className="w-1.5 h-4 bg-neon-blue/40 rounded-full" />)}
-            </div>
-          </div>
-        </div>
-      </div>
-    </SmoothSection>
-  </section>
-);
-
-export const TimelineSection: React.FC = () => (
-  <section className="py-48 px-6 container mx-auto max-w-6xl border-t border-white/5">
-    <SmoothSection className="text-center mb-24">
-      <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6 text-white">What Changes After You Connect</h2>
-      <p className="text-gray-400 text-lg max-w-2xl mx-auto font-medium">The transition from static inventory to liquid capital happens in measured cycles.</p>
-    </SmoothSection>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-      <div className="absolute top-12 left-0 w-full h-px bg-white/10 hidden md:block" />
-      {[
-        { day: "Day 0", title: "Blind Inventory", desc: "Data resides in silos. True capital holding costs are unquantified." },
-        { day: "Day 7", title: "Modeled Exit Paths", desc: "Deterministic recovery paths are computed for every stagnant SKU." },
-        { day: "Day 30", title: "Capital Recovered", desc: "Assets cleared through optimal channels. Cash-on-hand restored." }
-      ].map((step, i) => (
-        <SmoothSection key={i} className="relative z-10 flex flex-col items-center text-center">
-          <div className="w-24 h-24 bg-void border border-white/10 rounded-full flex items-center justify-center mb-8 shadow-2xl">
-            <Calendar className="w-8 h-8 text-white opacity-40" />
-          </div>
-          <span className="text-neon-gold font-mono text-xs tracking-widest uppercase mb-4 font-bold">{step.day}</span>
-          <h3 className="text-xl font-bold text-white mb-4">{step.title}</h3>
-          <p className="text-gray-500 text-sm leading-relaxed px-4">{step.desc}</p>
-        </SmoothSection>
-      ))}
-    </div>
-  </section>
-);
-
-export const StateExplanationSection: React.FC = () => (
-  <section className="py-48 px-6 container mx-auto max-w-4xl text-center border-t border-white/5">
-    <SmoothSection>
-      <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-8 text-white">Decision Integrity</h2>
-      <p className="text-xl text-gray-400 leading-relaxed font-medium mb-12">
-        “All recommendations are explicitly labeled as Live, Simulated, or Forecasted. LiquiFlow never mixes decision states.”
-      </p>
-      <div className="flex flex-wrap justify-center gap-6 opacity-40">
-        <div className="flex items-center gap-2">
-           <div className="w-2 h-2 rounded-full bg-neon-emerald" />
-           <span className="text-[10px] font-mono font-bold text-white uppercase tracking-widest">LIVE_OPERATIONAL</span>
-        </div>
-        <div className="flex items-center gap-2">
-           <div className="w-2 h-2 rounded-full bg-neon-blue" />
-           <span className="text-[10px] font-mono font-bold text-white uppercase tracking-widest">SIMULATED_PATH</span>
-        </div>
-        <div className="flex items-center gap-2">
-           <div className="w-2 h-2 rounded-full bg-neon-violet" />
-           <span className="text-[10px] font-mono font-bold text-white uppercase tracking-widest">FORECASTED_YIELD</span>
-        </div>
-      </div>
-    </SmoothSection>
-  </section>
-);
-
-export const CredibilitySection: React.FC = () => (
-  <section className="py-24 px-6 text-center border-t border-white/5 opacity-60">
-    <p className="text-[11px] font-mono text-gray-500 uppercase tracking-[0.4em] font-bold">
-      Built using deterministic microeconomic models, not probabilistic predictions.
-    </p>
-  </section>
 );
 
 export const ProblemSection: React.FC = () => (
@@ -264,7 +152,7 @@ export const WalkthroughSection: React.FC = () => {
       <div className="container mx-auto max-w-7xl">
         <SmoothSection className="text-center mb-24 px-4">
            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6 text-white leading-tight">Engineered for Precision</h2>
-           <p className="text-gray-400 text-lg max-w-2xl mx-auto font-medium">A guided view into the LiquiFlow interface. Professional controls for enterprise decision making.</p>
+           <p className="text-gray-400 text-lg max-w-2xl mx-auto font-medium">A guided view into the Liquidora interface. Professional controls for enterprise decision making.</p>
         </SmoothSection>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
@@ -328,7 +216,7 @@ export const DecisionStateSection: React.FC = () => {
              <span className="text-neon-blue font-mono text-[10px] tracking-[0.4em] uppercase mb-8 block font-bold">SIMULATION CORE</span>
              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-8 text-white leading-[1.1]">Predict Before <br/>You Commit</h2>
              <p className="text-lg text-gray-400 leading-relaxed mb-12 font-medium max-w-lg">
-                Evaluate outcomes before commitment. LiquiFlow separates live operational data from sandbox scenarios, allowing for zero-risk price experimentation.
+                Evaluate outcomes before commitment. Liquidora separates live operational data from sandbox scenarios, allowing for zero-risk price experimentation.
              </p>
              <div className="flex items-center gap-4 p-1.5 bg-white/5 border border-white/10 rounded w-fit">
                 <button 
@@ -595,7 +483,7 @@ export const FinalCTASection: React.FC<{onNavigate: (p: PageView) => void}> = ({
        <div className="container mx-auto relative z-10 max-w-4xl">
           <SmoothSection>
             <h2 className="text-4xl md:text-7xl font-bold mb-16 tracking-tight text-white leading-tight">
-               LiquiFlow. <br/>
+               Liquidora. <br/>
                Ready to flow?
             </h2>
             <button 

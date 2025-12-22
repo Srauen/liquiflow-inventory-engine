@@ -1,9 +1,8 @@
 
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Product, OptimalPath, RecommendationMeta } from '../../types';
-// Added AlertTriangle to the imports from lucide-react
-import { ShoppingCart, Truck, HeartHandshake, Box, DollarSign, Clock, Zap, ArrowRight, X, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
+import { Product, OptimalPath } from '../../types';
+import { ShoppingCart, Truck, HeartHandshake, Box, DollarSign, Info, AlertTriangle, Clock, Zap, ArrowRight, X } from 'lucide-react';
 import { calculateElasticity, calculateOptimalPath } from '../../utils/MicroeconomicsEngine';
 
 interface LiquidityNodeGraphProps {
@@ -24,12 +23,10 @@ interface PathData {
   risk: 'Low' | 'Medium' | 'High';
   description: string;
   assumptions: string[];
-  meta: RecommendationMeta;
 }
 
 export const LiquidityNodeGraph: React.FC<LiquidityNodeGraphProps> = ({ products, selectedProduct, onExecute }) => {
   const [activePath, setActivePath] = useState<string | null>(null);
-  const [showRecPanel, setShowRecPanel] = useState(true);
 
   // Use selected product or aggregate first few for the "Current Focus"
   const target = selectedProduct || products[0];
@@ -42,7 +39,7 @@ export const LiquidityNodeGraph: React.FC<LiquidityNodeGraphProps> = ({ products
     
     // 1. Retail Markdown (B2C) - Simulated at 25% discount
     const b2cSim = calculateElasticity(target.marketPrice, target.velocity, target.marketPrice * 0.75, target.elasticityCoef);
-    const b2cRecovery = b2cSim.projectedRevenue * target.stockLevel * 0.1; 
+    const b2cRecovery = b2cSim.projectedRevenue * target.stockLevel * 0.1; // simplified projection for the display
 
     // 2. B2B Wholesale - Immediate buyout at 40% of retail
     const b2bRecovery = retail * 0.42;
@@ -64,13 +61,7 @@ export const LiquidityNodeGraph: React.FC<LiquidityNodeGraphProps> = ({ products
         timeToLiquidity: '14-30 Days',
         risk: 'Medium',
         description: 'Direct consumer exit via tiered discounting. Highest potential yield but carries market absorption risk.',
-        assumptions: ['25% Base Discount', 'Standard Ad Spend', 'Current Traffic Velocity'],
-        meta: {
-           inputs: ['Historical SKU Velocity', 'Elasticity Coefficient', 'Seasonal Demand Factor'],
-           alternatives: ['B2B Wholesale (Rejected: Yield too low)', 'Tax Shield (Rejected: Capital needs priority)'],
-           primaryRisk: 'Demand softness in primary geo-zone.',
-           confidence: 'High (Dense Data)'
-        }
+        assumptions: ['25% Base Discount', 'Standard Ad Spend', 'Current Traffic Velocity']
       },
       { 
         id: 'b2b', 
@@ -82,13 +73,7 @@ export const LiquidityNodeGraph: React.FC<LiquidityNodeGraphProps> = ({ products
         timeToLiquidity: '3-5 Days',
         risk: 'Low',
         description: 'Bulk clearance to vetted wholesale partners. Immediate capital release at fixed pricing.',
-        assumptions: ['Bulk Palletization', 'FOB Shipping', 'Immediate Payment Terms'],
-        meta: {
-           inputs: ['Partner Buy-offer API', 'Logistic Lead Times', 'Inventory Physical Cond.'],
-           alternatives: ['Wait for Season (Rejected: Holding burn exceeds 15%)'],
-           primaryRisk: 'Counterparty default on large-volume clear.',
-           confidence: 'Medium (Market Variance)'
-        }
+        assumptions: ['Bulk Palletization', 'FOB Shipping', 'Immediate Payment Terms']
       },
       { 
         id: 'donation', 
@@ -100,13 +85,7 @@ export const LiquidityNodeGraph: React.FC<LiquidityNodeGraphProps> = ({ products
         timeToLiquidity: 'Tax Cycle',
         risk: 'Low',
         description: 'Inventory donation for IRS-8283 credits. Effective for aged stock with zero market velocity.',
-        assumptions: ['501(c)(3) Recipient', 'Fair Market Value Audit', '25% Corporate Tax Rate'],
-        meta: {
-           inputs: ['Tax Shield Cap YTD', 'Inventory FMV Data', 'Accountant Clearance'],
-           alternatives: ['Scrap Sale (Rejected: Net yield < $500)'],
-           primaryRisk: 'FMV Audit challenge by authorities.',
-           confidence: 'High (Dense Data)'
-        }
+        assumptions: ['501(c)(3) Recipient', 'Fair Market Value Audit', '25% Corporate Tax Rate']
       },
       { 
         id: 'shift', 
@@ -118,13 +97,7 @@ export const LiquidityNodeGraph: React.FC<LiquidityNodeGraphProps> = ({ products
         timeToLiquidity: '7-14 Days',
         risk: 'High',
         description: 'Inter-store or regional transfer to areas with positive demand delta. High logistic overhead.',
-        assumptions: ['Regional Demand Gap', 'Shipping Cost < 5%', 'Available Floor Space'],
-        meta: {
-           inputs: ['Store-level demand delta', 'Transfer costs', 'Regional promo capacity'],
-           alternatives: ['Central Clearing (Rejected: Fulfillment hub full)'],
-           primaryRisk: 'Inter-region demand cannibalization.',
-           confidence: 'Low (Insufficient Signal)'
-        }
+        assumptions: ['Regional Demand Gap', 'Shipping Cost < 5%', 'Available Floor Space']
       },
     ];
 
@@ -254,7 +227,7 @@ export const LiquidityNodeGraph: React.FC<LiquidityNodeGraphProps> = ({ products
 
             <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-2">
                <div>
-                  <label className="text-[9px] font-mono font-bold text-gray-600 uppercase tracking-widest mb-2 block">Calculated Yield</label>
+                  <label className="text-[9px] font-mono font-bold text-gray-600 uppercase tracking-widest mb-2 block">Deterministic Yield</label>
                   <div className="text-4xl font-black text-white font-mono tracking-tighter">
                     ${Math.floor(activePathData.recovery).toLocaleString()}
                   </div>
@@ -279,52 +252,6 @@ export const LiquidityNodeGraph: React.FC<LiquidityNodeGraphProps> = ({ products
                         {activePathData.risk}
                      </div>
                   </div>
-               </div>
-
-               {/* Why This Recommendation Panel */}
-               <div className="border border-white/10 rounded-xl overflow-hidden">
-                  <button 
-                     onClick={() => setShowRecPanel(!showRecPanel)}
-                     className="w-full p-4 flex justify-between items-center bg-white/5 hover:bg-white/10 transition-colors"
-                  >
-                     <span className="text-[10px] font-black uppercase tracking-widest text-white">Logic Scaffolding</span>
-                     {showRecPanel ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                  </button>
-                  <AnimatePresence>
-                     {showRecPanel && (
-                        <motion.div 
-                           initial={{ height: 0 }} 
-                           animate={{ height: 'auto' }} 
-                           exit={{ height: 0 }} 
-                           className="overflow-hidden bg-black/40 p-4 space-y-4"
-                        >
-                           <div>
-                              <label className="text-[8px] font-mono text-gray-600 uppercase tracking-widest block mb-1">Data Inputs</label>
-                              <div className="flex flex-wrap gap-1">
-                                 {activePathData.meta.inputs.map((inp, idx) => (
-                                    <span key={idx} className="text-[9px] text-gray-400 bg-white/5 px-2 rounded">{inp}</span>
-                                 ))}
-                              </div>
-                           </div>
-                           <div>
-                              <label className="text-[8px] font-mono text-gray-600 uppercase tracking-widest block mb-1">Alternatives Evaluated</label>
-                              <ul className="space-y-1">
-                                 {activePathData.meta.alternatives.map((alt, idx) => (
-                                    <li key={idx} className="text-[9px] text-gray-500 line-through">{alt}</li>
-                                 ))}
-                              </ul>
-                           </div>
-                           <div>
-                              <label className="text-[8px] font-mono text-gray-600 uppercase tracking-widest block mb-1">Primary Risk Factor</label>
-                              <p className="text-[9px] text-neon-pink font-bold uppercase">{activePathData.meta.primaryRisk}</p>
-                           </div>
-                           <div className="pt-2 border-t border-white/5">
-                              <span className="text-[8px] font-mono text-gray-600 uppercase">System Confidence</span>
-                              <p className={`text-[10px] font-black uppercase tracking-tighter ${activePathData.meta.confidence.includes('High') ? 'text-neon-emerald' : 'text-neon-blue'}`}>{activePathData.meta.confidence}</p>
-                           </div>
-                        </motion.div>
-                     )}
-                  </AnimatePresence>
                </div>
 
                <div className="bg-white/[0.02] p-4 rounded-xl border border-white/5">
@@ -357,7 +284,7 @@ export const LiquidityNodeGraph: React.FC<LiquidityNodeGraphProps> = ({ products
       {/* Ticker Indicator */}
       <div className="absolute bottom-6 right-6 flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
          <Zap className="w-3.5 h-3.5 text-neon-emerald animate-pulse" />
-         <span className="text-[9px] font-mono font-black text-gray-400 uppercase tracking-tighter">Forecast Engine: LIVE_STREAMING v4.1</span>
+         <span className="text-[9px] font-mono font-black text-gray-400 uppercase tracking-tighter">Forecast Engine: Deterministic v4.1</span>
       </div>
     </div>
   );

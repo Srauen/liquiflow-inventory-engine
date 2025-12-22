@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Loader2, GraduationCap, Cpu } from 'lucide-react';
+import { Sparkles, X, Loader2, GraduationCap, Cpu } from 'lucide-react';
 import { explainTerm } from '../../utils/gemini';
 import { GlassCard } from './GlassCard';
 
@@ -63,9 +63,9 @@ export const AITutor: React.FC = () => {
             zIndex: 9999
           }}
           onClick={handleExplain}
-          className="flex items-center gap-2 px-3 py-2 bg-white text-black rounded-full shadow-[0_0_20px_rgba(255,255,255,0.4)] font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-transform"
+          className="flex items-center gap-2 px-3 py-2 bg-neon-blue text-black rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] font-bold text-xs hover:scale-105 transition-transform"
         >
-          <Cpu className="w-3 h-3" /> ANALYZE
+          <Cpu className="w-3 h-3" /> Learn
         </motion.button>
       )}
 
@@ -84,35 +84,35 @@ export const AITutor: React.FC = () => {
           className="w-80"
           ref={tutorRef}
         >
-          <GlassCard glowColor="blue" className="bg-black/95 backdrop-blur-2xl border-white/10 shadow-2xl">
+          <GlassCard glowColor="blue" className="bg-black/90 backdrop-blur-2xl border-neon-blue/30 shadow-2xl">
             <div className="flex justify-between items-start mb-3">
               <div className="flex items-center gap-2 text-neon-blue">
-                <Cpu className="w-5 h-5" />
-                <span className="font-black text-[10px] uppercase tracking-widest">Neural Logic Core</span>
+                <GraduationCap className="w-5 h-5" />
+                <span className="font-bold text-sm">Methodology Tutor</span>
               </div>
-              <button onClick={closeTutor} className="text-gray-600 hover:text-white">
+              <button onClick={closeTutor} className="text-gray-400 hover:text-white">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="text-sm text-gray-200 leading-relaxed font-medium">
+            <div className="text-sm text-gray-200 leading-relaxed">
               {loading ? (
-                <div className="flex items-center justify-center py-4 gap-3 text-neon-blue">
+                <div className="flex items-center justify-center py-4 gap-2 text-neon-blue">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] font-black">Accessing Edge Memory...</span>
+                  <span className="font-mono text-xs uppercase">Consulting Local Core...</span>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  <p className="font-mono text-[9px] text-gray-600 uppercase tracking-widest">LOCAL_DEFINITION: "{selection?.text}"</p>
-                  <p className="animate-in fade-in text-sm">{explanation}</p>
+                <div className="space-y-2">
+                  <p className="font-mono text-[10px] text-gray-500 uppercase tracking-wider">Concept: "{selection?.text}"</p>
+                  <p className="animate-in fade-in">{explanation}</p>
                 </div>
               )}
             </div>
             
             {!loading && (
-              <div className="mt-4 pt-3 border-t border-white/5 text-[8px] text-gray-700 flex justify-between uppercase font-mono font-black tracking-widest">
-                <span>Local Logic v4.2</span>
-                <span className="text-neon-emerald">Ready</span>
+              <div className="mt-3 pt-3 border-t border-white/10 text-[9px] text-gray-600 flex justify-between uppercase font-mono">
+                <span>LiquiFlow Offline Engine</span>
+                <span className="text-neon-emerald">Cost: $0.00</span>
               </div>
             )}
           </GlassCard>

@@ -32,19 +32,6 @@ export const calculateOptimalPath = (
   };
 };
 
-export const calculateHoldingCost = (costBasis: number, daysOnHand: number): number => {
-  // Annual carrying cost estimated at 25% of principal
-  const dailyRate = (costBasis * 0.25) / 365;
-  return dailyRate * daysOnHand;
-};
-
-export const calculateInventoryTurnover = (velocity: number, stockLevel: number): number => {
-  if (stockLevel === 0) return 0;
-  // Annual turnover based on weekly velocity
-  const annualSales = velocity * 52;
-  return annualSales / stockLevel;
-};
-
 export const calculateLiquidityScore = (velocity: number, daysOnHand: number, margin: number): number => {
   const normVelocity = Math.min(velocity * 10, 100);
   const normDOH = Math.max(0, 100 - (daysOnHand / 2.5)); 
