@@ -2,7 +2,8 @@
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product, OptimalPath, RecommendationMeta } from '../../types';
-import { ShoppingCart, Truck, HeartHandshake, Box, DollarSign, Info, AlertTriangle, Clock, Zap, ArrowRight, X, ChevronDown, ChevronUp } from 'lucide-react';
+// Added AlertTriangle to the imports from lucide-react
+import { ShoppingCart, Truck, HeartHandshake, Box, DollarSign, Clock, Zap, ArrowRight, X, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import { calculateElasticity, calculateOptimalPath } from '../../utils/MicroeconomicsEngine';
 
 interface LiquidityNodeGraphProps {
@@ -253,7 +254,7 @@ export const LiquidityNodeGraph: React.FC<LiquidityNodeGraphProps> = ({ products
 
             <div className="space-y-6 flex-1 overflow-y-auto custom-scrollbar pr-2">
                <div>
-                  <label className="text-[9px] font-mono font-bold text-gray-600 uppercase tracking-widest mb-2 block">Deterministic Yield</label>
+                  <label className="text-[9px] font-mono font-bold text-gray-600 uppercase tracking-widest mb-2 block">Calculated Yield</label>
                   <div className="text-4xl font-black text-white font-mono tracking-tighter">
                     ${Math.floor(activePathData.recovery).toLocaleString()}
                   </div>
@@ -356,7 +357,7 @@ export const LiquidityNodeGraph: React.FC<LiquidityNodeGraphProps> = ({ products
       {/* Ticker Indicator */}
       <div className="absolute bottom-6 right-6 flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
          <Zap className="w-3.5 h-3.5 text-neon-emerald animate-pulse" />
-         <span className="text-[9px] font-mono font-black text-gray-400 uppercase tracking-tighter">Forecast Engine: Deterministic v4.1</span>
+         <span className="text-[9px] font-mono font-black text-gray-400 uppercase tracking-tighter">Forecast Engine: LIVE_STREAMING v4.1</span>
       </div>
     </div>
   );
