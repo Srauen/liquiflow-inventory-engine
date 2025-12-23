@@ -7,7 +7,8 @@ import { SyncEngineVisual } from './SyncEngineVisual';
 import { 
   ProblemSection, PricingSection, FAQSection, FinalCTASection, 
   FeatureOverviewSection, WalkthroughSection, TechStackSection,
-  DecisionStateSection, StorySection, RoleSection, SmoothSection
+  DecisionStateSection, StorySection, RoleSection, SmoothSection,
+  NetworkSection, StrategicLayersSection
 } from './LandingSections';
 import { TrustSection } from './TrustSection';
 import { EducationSection } from './EducationSection';
@@ -147,6 +148,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigat
 
       <WalkthroughSection />
 
+      <NetworkSection />
+
       <DecisionStateSection />
 
       <section id="calculator" className="py-60 px-6 relative overflow-hidden bg-[#08080a] border-y border-white/5">
@@ -161,6 +164,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigat
             </SmoothSection>
          </div>
       </section>
+
+      <StrategicLayersSection />
 
       <StorySection />
 

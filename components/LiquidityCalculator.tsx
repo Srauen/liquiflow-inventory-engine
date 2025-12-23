@@ -109,23 +109,24 @@ export const LiquidityCalculator: React.FC<LiquidityCalculatorProps> = ({ onNavi
         </div>
 
         {/* Output Panel */}
-        <div className="w-full lg:w-[450px] p-10 md:p-12 lg:p-16 bg-white text-black flex flex-col justify-between">
-          <div className="text-center">
+        <div className="w-full lg:w-[450px] p-10 md:p-12 lg:p-16 bg-white text-black flex flex-col items-center justify-between">
+          <div className="w-full text-center">
             <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-12">Recoverable Liquidity Forecast</p>
             
-            <div className="relative mb-16 overflow-hidden">
-               <div className="text-5xl md:text-6xl lg:text-7xl font-black font-mono tracking-tighter italic break-words flex items-center justify-center">
-                 $<AnimatedCounter value={stats.totalPotential} duration={1000} />
+            <div className="flex flex-col items-center justify-center relative mb-16 px-4">
+               <div className="w-full flex items-center justify-center text-5xl md:text-6xl lg:text-7xl font-black font-mono tracking-tighter italic">
+                 <span className="mr-1">$</span>
+                 <AnimatedCounter value={stats.totalPotential} duration={1000} />
                </div>
-               <div className="mt-6 text-[10px] font-black text-neon-emerald uppercase tracking-[0.3em] flex items-center justify-center gap-2">
+               <div className="mt-8 text-[10px] font-black text-neon-emerald uppercase tracking-[0.3em] flex items-center gap-2">
                  <ArrowDownRight className="w-4 h-4" /> Annualized Net Recovery
                </div>
             </div>
 
-            <div className="space-y-6 pt-12 border-t border-black/5">
+            <div className="space-y-6 pt-12 border-t border-black/5 w-full">
                <div className="flex justify-between items-center text-[11px] font-black uppercase">
                   <span className="text-gray-400 tracking-widest">Locked Principal</span>
-                  <span className="font-mono">${Math.floor(stats.frozenPrincipal).toLocaleString()}</span>
+                  <span className="font-mono text-black">${Math.floor(stats.frozenPrincipal).toLocaleString()}</span>
                </div>
                <div className="flex justify-between items-center text-[11px] font-black uppercase">
                   <span className="text-gray-400 tracking-widest">Annual Holding Burn</span>

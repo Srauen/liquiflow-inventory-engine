@@ -6,7 +6,7 @@ import {
   ScanLine, DollarSign, Activity, Target, Layers, 
   Search, Info, Database, Box, User, Briefcase, 
   FlaskConical, CheckCircle, Clock, TrendingUp, Cpu,
-  Network, ArrowUpRight, BarChart3, Binary
+  Network, ArrowUpRight, BarChart3, Binary, Globe, ShieldCheck, PieChart
 } from 'lucide-react';
 import { PageView } from '../App';
 import { GlassCard } from './ui/GlassCard';
@@ -38,7 +38,92 @@ export const ProblemSection: React.FC = () => (
   </section>
 );
 
-// --- VECTOR VISUALS FOR STORY STEPS ---
+const MiniHUD: React.FC<{ mode: number }> = ({ mode }) => {
+  const renderHUD = () => {
+    switch(mode) {
+      case 0: // Command Center
+        return (
+          <div className="w-full h-full p-6 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-3 bg-white/5 border border-white/10 rounded">
+                <div className="text-[8px] text-gray-500 uppercase mb-1">Health Index</div>
+                <div className="text-xl font-bold text-neon-emerald">94.2</div>
+              </div>
+              <div className="p-3 bg-white/5 border border-white/10 rounded">
+                <div className="text-[8px] text-gray-500 uppercase mb-1">Frozen Cap</div>
+                <div className="text-xl font-bold text-neon-pink">$214k</div>
+              </div>
+            </div>
+            <div className="flex-1 border border-white/5 rounded p-4 bg-black/20 flex flex-col justify-between">
+               <div className="flex justify-between items-center text-[10px] font-mono text-gray-600">
+                  <span>REALTIME_SCAN</span>
+                  <Activity className="w-3 h-3 text-neon-blue animate-pulse" />
+               </div>
+               <div className="flex items-end gap-1 h-24">
+                  {[40, 70, 45, 90, 65, 80, 50, 60, 85].map((h, i) => (
+                    <motion.div 
+                      key={i} 
+                      initial={{ height: 0 }} 
+                      animate={{ height: `${h}%` }} 
+                      transition={{ delay: i * 0.1 }}
+                      className="flex-1 bg-neon-blue/20 border-t border-neon-blue rounded-t-sm" 
+                    />
+                  ))}
+               </div>
+            </div>
+          </div>
+        );
+      case 1: // Strategic Lab
+        return (
+          <div className="w-full h-full p-6 flex flex-col items-center justify-center">
+             <div className="w-32 h-32 border-4 border-white/5 rounded-full flex items-center justify-center relative">
+                <motion.div 
+                   animate={{ rotate: 360 }} 
+                   transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                   className="absolute inset-0 border-t-2 border-neon-gold rounded-full" 
+                />
+                <div className="text-center">
+                   <div className="text-2xl font-bold text-white">42%</div>
+                   <div className="text-[8px] text-gray-500 uppercase">Elasticity Delta</div>
+                </div>
+             </div>
+             <div className="mt-8 flex gap-4 w-full">
+                <div className="h-1 flex-1 bg-neon-gold/20 rounded-full overflow-hidden">
+                   <motion.div animate={{ width: ['0%', '100%'] }} transition={{ duration: 2, repeat: Infinity }} className="h-full bg-neon-gold" />
+                </div>
+                <div className="h-1 flex-1 bg-white/10 rounded-full" />
+             </div>
+          </div>
+        );
+      case 2: // Omnichannel
+        return (
+          <div className="w-full h-full p-6 grid grid-cols-2 grid-rows-2 gap-4">
+             {['Shopify', 'Amazon', 'eBay', 'StockX'].map((plat, i) => (
+                <div key={i} className="border border-white/5 bg-white/[0.02] p-3 rounded flex items-center justify-between">
+                   <span className="text-[10px] font-bold text-gray-400">{plat}</span>
+                   <div className="flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-neon-emerald" />
+                      <span className="text-[8px] text-gray-600">SYNC</span>
+                   </div>
+                </div>
+             ))}
+             <div className="col-span-2 row-span-1 border border-white/5 bg-neon-blue/5 p-4 rounded flex items-center justify-center gap-4">
+                <Globe className="w-8 h-8 text-neon-blue opacity-50" />
+                <div className="text-[10px] font-mono text-gray-400">GLOBAL_SYNC_ACTIVE: 100% CONSISTENCY</div>
+             </div>
+          </div>
+        );
+      default:
+        return (
+          <div className="w-full h-full flex items-center justify-center">
+             <Zap className="w-16 h-16 text-neon-blue animate-pulse" />
+          </div>
+        );
+    }
+  }
+  return <div className="w-full h-full">{renderHUD()}</div>;
+};
+
 const StepVisual: React.FC<{ step: number; color: string; icon: any }> = ({ step, color, icon: Icon }) => {
   const containerVariants = {
     initial: { opacity: 0, scale: 0.95 },
@@ -145,8 +230,6 @@ export const WalkthroughSection: React.FC = () => {
     { label: 'Exit Automations', icon: Zap, desc: 'Rule-based liquidation protocols running on autopilot.' }
   ];
 
-  const CurrentIcon = features[activeFeature].icon;
-
   return (
     <section id="walkthrough" className="py-48 px-6 bg-[#08080a] border-y border-white/5">
       <div className="container mx-auto max-w-7xl">
@@ -182,20 +265,11 @@ export const WalkthroughSection: React.FC = () => {
                     <div className="flex justify-between items-center border-b border-white/5 p-4 shrink-0">
                        <div className="flex items-center gap-3">
                           <div className="w-6 h-6 bg-white text-black rounded flex items-center justify-center font-bold text-xs">L</div>
-                          <span className="font-mono text-[9px] text-gray-400 uppercase tracking-widest font-bold">SYSTEM_{features[activeFeature].label.toUpperCase()}</span>
+                          <span className="font-mono text-[9px] text-gray-400 uppercase tracking-widest font-bold">SYSTEM_{features[activeFeature].label.toUpperCase().replace(' ', '_')}</span>
                        </div>
                     </div>
-                    <div className="flex-1 flex flex-col items-center justify-center p-12 opacity-40">
-                       <CurrentIcon size={64} className="text-white mb-6" />
-                       <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden">
-                          <motion.div 
-                             key={activeFeature}
-                             initial={{ width: 0 }}
-                             animate={{ width: '100%' }}
-                             transition={{ duration: 1 }}
-                             className="h-full bg-white/40"
-                          />
-                       </div>
+                    <div className="flex-1 w-full relative">
+                       <MiniHUD mode={activeFeature} />
                     </div>
                  </div>
               </div>
@@ -341,6 +415,9 @@ export const RoleSection: React.FC = () => {
 
 export const TechStackSection: React.FC = () => (
    <section className="py-32 border-y border-white/5 bg-void overflow-hidden relative">
+      <div className="text-center mb-12 opacity-40">
+         <span className="text-[9px] font-mono uppercase tracking-[0.5em] text-white">Will be partners with</span>
+      </div>
       <div className="flex animate-marquee gap-32 min-w-full items-center opacity-20">
          {['Shopify Plus', 'NetSuite', 'SAP', 'Salesforce', 'QuickBooks', 'Amazon FBA', 'StockX', 'Flexport'].map((tech, i) => (
             <span key={i} className="text-xl font-bold uppercase text-white whitespace-nowrap tracking-[0.4em]">{tech}</span>
@@ -498,3 +575,75 @@ export const FinalCTASection: React.FC<{onNavigate: (p: PageView) => void}> = ({
     </section>
   );
 };
+
+// --- FILLER: NEW CONTENT SECTIONS FOR "BLANK SPACES" ---
+
+export const NetworkSection: React.FC = () => (
+  <section className="py-48 px-6 bg-void border-y border-white/5">
+    <div className="container mx-auto max-w-7xl">
+       <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+          <SmoothSection>
+             <div className="relative p-12 bg-white/[0.02] border border-white/5 rounded-2xl h-[400px] overflow-hidden group">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.05)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Network className="w-16 h-16 text-neon-blue mb-8 opacity-20" />
+                <h3 className="text-2xl font-bold mb-4 uppercase tracking-tighter">B2B Clearing Network</h3>
+                <p className="text-gray-500 text-lg leading-relaxed mb-8">Access $500M+ in immediate buying power from vetted wholesale partners. Skip the consumer market entirely.</p>
+                <div className="flex items-center gap-4 text-[10px] font-mono text-gray-600 uppercase tracking-widest">
+                   <div className="w-2 h-2 rounded-full bg-neon-emerald animate-ping" />
+                   142 Active Liquidation Partners
+                </div>
+             </div>
+          </SmoothSection>
+          <SmoothSection>
+             <div className="space-y-12">
+                <div className="flex gap-6">
+                   <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center shrink-0">
+                      <ShieldCheck className="w-6 h-6 text-neon-emerald" />
+                   </div>
+                   <div>
+                      <h4 className="font-bold text-white mb-2">Authenticated Transactions</h4>
+                      <p className="text-gray-400 text-sm">Every bulk lot is verified and insured through our custodial layer before capital is released.</p>
+                   </div>
+                </div>
+                <div className="flex gap-6">
+                   <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center shrink-0">
+                      <BarChart3 className="w-6 h-6 text-neon-blue" />
+                   </div>
+                   <div>
+                      <h4 className="font-bold text-white mb-2">Automated RFQ Routing</h4>
+                      <p className="text-gray-400 text-sm">Our system automatically routes your inventory to the buyer offering the highest immediate net yield.</p>
+                   </div>
+                </div>
+             </div>
+          </SmoothSection>
+       </div>
+    </div>
+  </section>
+);
+
+export const StrategicLayersSection: React.FC = () => (
+   <section className="py-48 px-6 container mx-auto max-w-7xl">
+      <SmoothSection className="text-center mb-32">
+         <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-8">The Liquidora Stack</h2>
+         <p className="text-gray-400 text-lg max-w-2xl mx-auto font-medium">A modular architecture designed for high-frequency inventory management.</p>
+      </SmoothSection>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+         {[
+            { title: "Ingestion Layer", icon: Database, color: "blue", desc: "Native API connectors for SAP, NetSuite, and Shopify Plus." },
+            { title: "Logic Layer", icon: Binary, color: "gold", desc: "Deterministic micro-economic models calculating real-time elasticity." },
+            { title: "Exit Layer", icon: Target, color: "pink", desc: "Omnichannel listing hub with unified inventory locking." }
+         ].map((layer, i) => (
+            <SmoothSection key={i} className="relative group">
+               <div className="absolute inset-0 bg-white/[0.01] rounded-2xl -z-10 group-hover:bg-white/[0.03] transition-colors" />
+               <div className="p-10 text-center flex flex-col items-center">
+                  <div className={`w-16 h-16 rounded-2xl bg-black border border-white/5 flex items-center justify-center mb-8 shadow-xl group-hover:border-neon-${layer.color}`}>
+                     <layer.icon className={`w-8 h-8 text-gray-500 group-hover:text-neon-${layer.color}`} />
+                  </div>
+                  <h3 className="text-xl font-bold mb-4 uppercase tracking-tighter">{layer.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">{layer.desc}</p>
+               </div>
+            </SmoothSection>
+         ))}
+      </div>
+   </section>
+);
