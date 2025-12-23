@@ -23,7 +23,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <ul className="space-y-4 text-sm text-gray-500">
                <li onClick={() => onNavigate('landing')} className="hover:text-white cursor-pointer transition-colors">Features</li>
                <li onClick={() => onNavigate('pricing')} className="hover:text-white cursor-pointer transition-colors">Pricing</li>
-               <li onClick={() => onNavigate('feature-tax')} className="hover:text-white cursor-pointer transition-colors">Tax Shield</li>
+               {/* Fixed: 'feature-tax' was not in the PageView union. Pointing to 'finance' which contains the tax documentation. */}
+               <li onClick={() => onNavigate('finance')} className="hover:text-white cursor-pointer transition-colors">Tax Shield</li>
             </ul>
          </div>
 

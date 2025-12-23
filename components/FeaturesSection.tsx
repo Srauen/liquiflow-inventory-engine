@@ -15,49 +15,56 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ onNavigate }) 
       title: "AI Demand Forecasting",
       description: "Predict exactly when demand will drop for every SKU using historical velocity and market trends.",
       color: "blue",
-      link: 'feature-markdowns' as PageView
+      // Fixed: Mapped to valid 'inventory' PageView
+      link: 'inventory' as PageView
     },
     {
       icon: <ShoppingBag className="w-8 h-8 text-neon-pink" />,
       title: "Smart Price Elasticity",
       description: "Our engine simulates demand curves to find the perfect discount that maximizes revenue, not just sales volume.",
       color: "pink",
-      link: 'feature-markdowns' as PageView
+      // Fixed: Mapped to valid 'inventory' PageView
+      link: 'inventory' as PageView
     },
     {
       icon: <ScanLine className="w-8 h-8 text-neon-emerald" />,
       title: "Inventory Cleanliness",
       description: "Get a 0-100 health score for every product. Instantly identify at-risk items before they become dead stock.",
       color: "emerald",
-      link: 'feature-sync' as PageView
+      // Fixed: Mapped to valid 'marketplaces' PageView
+      link: 'marketplaces' as PageView
     },
     {
       icon: <Globe className="w-8 h-8 text-neon-violet" />,
       title: "Marketplace Posting Hub",
       description: "One-click push to eBay, Amazon, Poshmark, and StockX. Syncs inventory in real-time across all channels.",
       color: "violet",
-      link: 'feature-sync' as PageView
+      // Fixed: Mapped to valid 'marketplaces' PageView
+      link: 'marketplaces' as PageView
     },
     {
       icon: <FileText className="w-8 h-8 text-white" />,
       title: "Tax Write-Off Workflow",
       description: "Automate the generation of IRS Form 8283 for donations, turning total losses into tax deductions.",
       color: "blue",
-      link: 'feature-tax' as PageView
+      // Fixed: Mapped to valid 'finance' PageView
+      link: 'finance' as PageView
     },
     {
       icon: <Truck className="w-8 h-8 text-neon-pink" />,
       title: "B2B Liquidation Network",
       description: "Aggregate micro-lots into pallets and sell directly to our network of vetted bulk buyers.",
       color: "pink",
-      link: 'feature-b2b' as PageView
+      // Fixed: Mapped to valid 'marketplaces' PageView
+      link: 'marketplaces' as PageView
     },
     {
       icon: <Workflow className="w-8 h-8 text-neon-violet" />,
       title: "Workflow Builder",
       description: "Set 'If This Then That' rules. 'If stock > 180 days, apply 20% discount.' Run your ops on autopilot.",
       color: "violet",
-      link: 'feature-markdowns' as PageView
+      // Fixed: Mapped to valid 'inventory' PageView
+      link: 'inventory' as PageView
     }
   ];
 

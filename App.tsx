@@ -39,7 +39,6 @@ const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [workflows, setWorkflows] = useState<Workflow[]>(MOCK_WORKFLOWS);
   
-  // --- LIQUIDITY SANDBOX™ ---
   const [isSandboxMode, setIsSandboxMode] = useState(false);
   const [sandboxedProducts, setSandboxedProducts] = useState<Product[]>([]);
 
@@ -125,12 +124,6 @@ const App: React.FC = () => {
     addNotification('Automation Active', `Rule "${newWorkflow.name}" is now sensing triggers.`, 'success');
   };
 
-  useEffect(() => {
-    const handleNav = (e: any) => navigateTo(e.detail as PageView);
-    window.addEventListener('nav-change', handleNav);
-    return () => window.removeEventListener('nav-change', handleNav);
-  }, []);
-
   const navigateTo = (page: PageView) => {
     setViewState(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -192,7 +185,6 @@ const App: React.FC = () => {
     <div className={`min-h-screen bg-void text-white font-sans selection:bg-neon-gold selection:text-black ${isSandboxMode ? 'border-4 border-neon-violet transition-all duration-500' : ''}`}>
       {isLoggedIn && <AITutor />}
 
-      {/* --- FLOATING TOASTS (Fix for 'message not shown') --- */}
       <AnimatePresence>
         {activeToast && (
           <motion.div 

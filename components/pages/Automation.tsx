@@ -71,10 +71,10 @@ export const Automation: React.FC<AutomationProps> = ({ workflows = [], onCreate
                                onChange={(e) => setNewTrigger(e.target.value)}
                                className="w-full bg-black/40 border border-white/20 rounded p-3 text-white focus:border-neon-blue outline-none"
                             >
-                               <option>DOH &gt; 90 Days</option>
-                               <option>Stock &gt; 1000 Units</option>
-                               <option>Category == 'Seasonal'</option>
-                               <option>Velocity &lt; 1.0</option>
+                               <option value="DOH > 90">DOH {" > "} 90 Days</option>
+                               <option value="Stock > 1000">Stock {" > "} 1000 Units</option>
+                               <option value="Category == 'Seasonal'">Category == 'Seasonal'</option>
+                               <option value="Velocity < 1.0">Velocity {" < "} 1.0</option>
                             </select>
                          </div>
 

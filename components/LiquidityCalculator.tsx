@@ -71,7 +71,7 @@ export const LiquidityCalculator: React.FC<LiquidityCalculatorProps> = ({ onNavi
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="grid grid-cols-2 gap-10 pt-10 border-t border-white/5">
                   <div className="space-y-8">
                     <div>
-                      <label className="block text-[9px] font-black text-gray-600 uppercase tracking-widest mb-4">Aged Fraction (>180d)</label>
+                      <label className="block text-[9px] font-black text-gray-600 uppercase tracking-widest mb-4">Aged Fraction ({" > "}180d)</label>
                       <div className="flex items-center gap-4">
                         <input type="range" min="5" max="60" value={agedInventoryPct} onChange={(e) => setAgedInventoryPct(Number(e.target.value))} className="flex-1 accent-neon-pink h-1 bg-gray-900 rounded-lg" />
                         <span className="text-xs font-mono font-black text-white w-10">{agedInventoryPct}%</span>

@@ -58,7 +58,6 @@ export interface UserPreferences {
   themeColor: 'blue' | 'pink' | 'emerald' | 'violet';
 }
 
-// Added Badge interface to support user achievements
 export interface Badge {
   id: string;
   name: string;
@@ -67,7 +66,6 @@ export interface Badge {
   description: string;
 }
 
-// Added Lesson interface for the academy section
 export interface Lesson {
   id: string;
   title: string;
@@ -78,7 +76,6 @@ export interface Lesson {
   content: string;
 }
 
-// Updated UserProfile with gamification metrics used in mock data and components
 export interface UserProfile {
   id: string;
   name: string;
