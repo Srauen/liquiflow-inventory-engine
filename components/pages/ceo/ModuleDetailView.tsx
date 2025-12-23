@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Cpu, Activity, ShieldCheck, Zap, Database, Terminal, Search, Globe, Target, BarChart3, PieChart, Network, Lock, Crosshair, Radio, Signal, Layers } from 'lucide-react';
+import { ArrowLeft, Cpu, Activity, ShieldCheck, Zap, Database, Terminal, Search, Globe, Target, BarChart3, PieChart, Network, Lock, Crosshair, Radio, Signal, Layers, BrainCircuit } from 'lucide-react';
 import { GlassCard } from '../../ui/GlassCard';
 import { GoogleGenAI } from "@google/genai";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis } from 'recharts';
 
 interface ModuleDetailViewProps {
   module: {
@@ -96,11 +96,11 @@ const LogicOverrideUI = () => (
       <span className="animate-pulse">_</span>
     </div>
     <div className="text-gray-500 space-y-1">
-      <p>> Initializing core override sequence...</p>
-      <p>> Protocol: DETERMINISTIC_BYPASS_V4</p>
-      <p>> Identity: Alex Merchant [CEO/L10]</p>
-      <p className="text-neon-pink">> WARNING: Manual override will disable AI safeguards.</p>
-      <p>> Waiting for entropy handshake...</p>
+      <p>&gt; Initializing core override sequence...</p>
+      <p>&gt; Protocol: DETERMINISTIC_BYPASS_V4</p>
+      <p>&gt; Identity: Alex Merchant [CEO/L10]</p>
+      <p className="text-neon-pink">&gt; WARNING: Manual override will disable AI safeguards.</p>
+      <p>&gt; Waiting for entropy handshake...</p>
     </div>
     <div className="grid grid-cols-2 gap-4 mt-8">
       <button className="border border-neon-pink/20 bg-neon-pink/5 p-3 rounded text-[10px] font-black text-neon-pink hover:bg-neon-pink hover:text-black transition-all">FORCE_PURGE</button>
@@ -273,7 +273,7 @@ export const ModuleDetailView: React.FC<ModuleDetailViewProps> = ({ module, onBa
                  <div className="flex items-center gap-2"><div className="w-2 h-2 rounded bg-neon-emerald/20" /> Integrity: 100%</div>
                  <div className="flex items-center gap-2"><div className="w-2 h-2 rounded bg-neon-blue/20" /> Sync: Stable</div>
               </div>
-              <button className={`px-12 py-2.5 rounded-lg bg-neon-${module.color} text-black text-[10px] font-black uppercase tracking-widest hover:brightness-125 transition-all shadow-[0_0_30px_rgba(0,0,0,0.5)]`}>
+              <button className={`px-12 py-2.5 rounded-lg bg-neon-${module.color} text-black text-[10px] font-black uppercase tracking-widest hover:brightness-125 transition-all shadow-[0_0_30px_rgba(0,240,255,0.5)]`}>
                 Deploy Optimization
               </button>
             </div>
@@ -346,9 +346,3 @@ export const ModuleDetailView: React.FC<ModuleDetailViewProps> = ({ module, onBa
     </motion.div>
   );
 };
-
-const BrainCircuit = ({ className }: { className?: string }) => (
-  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 4.5a2.5 2.5 0 0 0-4.96-.46 2.5 2.5 0 0 0-1.98 3 2.5 2.5 0 0 0 .94 4.82 2.5 2.5 0 0 0 3 1.98 2.5 2.5 0 0 0 4.82-.94 2.5 2.5 0 0 0 1.98-3 2.5 2.5 0 0 0-.94-4.82 2.5 2.5 0 0 0-3-1.98z"/><path d="M12 4.5V12h7.5"/><path d="M14.5 14.5 19 19"/><path d="M10 10 5 5"/><path d="M7.5 12H15"/>
-  </svg>
-);
