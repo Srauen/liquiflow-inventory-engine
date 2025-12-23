@@ -44,6 +44,7 @@ const App: React.FC = () => {
   const [workflows, setWorkflows] = useState<Workflow[]>(MOCK_WORKFLOWS);
   const [isSandboxMode, setIsSandboxMode] = useState(false);
   const [user, setUser] = useState<UserProfile>(MOCK_USER);
+  const [userPrefs, setUserPrefs] = useState<UserPreferences | null>(null);
   const [activeToast, setActiveToast] = useState<any>(null);
   const [notifications, setNotifications] = useState([
     { id: 1, title: 'Liquidity Audit Ready', message: 'Your Q4 projections are ready for review.', type: 'success', time: '2m ago' },
@@ -93,6 +94,7 @@ const App: React.FC = () => {
 
   const renderAppContent = () => {
     switch (viewState) {
+      case 'onboarding': return <Onboarding onComplete={(p) => { setUserPrefs(p); navigateTo('dashboard'); }} />;
       case 'inventory': return <Inventory products={products} setProducts={setProducts} onLiquidate={() => {}} onDelete={() => {}} addNotification={addNotification} />;
       case 'automation': return <Automation workflows={workflows} onCreateWorkflow={(w) => setWorkflows([w, ...workflows])} />;
       case 'finance': return <Finance />;
@@ -110,6 +112,8 @@ const App: React.FC = () => {
       case 'simulator': return selectedProduct ? <SkuSimulator product={selectedProduct} onBack={() => navigateTo('dashboard')} /> : null;
       case 'dashboard':
       default: return <Dashboard 
+                  user={user}
+                  userPrefs={userPrefs}
                   products={products} 
                   onSelectProduct={(p) => { setSelectedProduct(p); navigateTo('simulator'); }} 
                   onNavigate={navigateTo}

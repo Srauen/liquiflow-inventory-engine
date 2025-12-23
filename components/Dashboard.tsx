@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Activity, Zap, Target, DollarSign, Package, 
@@ -7,12 +7,13 @@ import {
   ArrowUpRight, Shield, Globe, Clock, Box
 } from 'lucide-react';
 import { GlassCard } from './ui/GlassCard';
-import { Product, UserPreferences } from '../types';
+import { Product, UserPreferences, UserProfile } from '../types';
 import { PageView } from '../App';
 import { AnimatedCounter } from './ui/AnimatedCounter';
 import { LiquidityNodeGraph } from './pages/LiquidityNodeGraph';
 
 interface DashboardProps {
+  user: UserProfile;
   onSelectProduct: (product: Product) => void;
   products: Product[];
   isDemo?: boolean;
@@ -31,6 +32,7 @@ const CRITICAL_ALERTS = [
 ];
 
 export const Dashboard: React.FC<DashboardProps> = ({ 
+  user,
   products, 
   onNavigate, 
   userPrefs, 
@@ -53,32 +55,120 @@ export const Dashboard: React.FC<DashboardProps> = ({
     setTimeout(() => onNavigate('inventory'), 800);
   };
 
+  // 🟦 DYNAMIC KPI HUD LOGIC
+  const kpis = useMemo(() => {
+    const data = [
+      {
+        id: 'liquidity-cushion',
+        label: 'Aggregate Liquidity Index',
+        value: avgLiquidity,
+        sub: '2.1%',
+        icon: Activity,
+        color: 'neon-blue',
+        type: 'counter',
+        target: 'inventory' as PageView
+      },
+      {
+        id: 'total-aged-inventory-value',
+        label: 'Capital Frozen In Aging SKUs',
+        value: totalFrozenVal,
+        prefix: '$',
+        icon: Package,
+        color: 'neon-pink',
+        type: 'animated',
+        target: 'reports' as PageView
+      },
+      {
+        id: 'margin-erosion-rate',
+        label: 'Global Asset Velocity',
+        value: 4.8,
+        suffix: '/wk Avg',
+        icon: Globe,
+        color: 'white',
+        type: 'static',
+        target: 'marketplaces' as PageView
+      },
+      {
+        id: 'capital-at-risk',
+        label: 'Recoverable Yield Target',
+        value: totalFrozenVal * 0.45,
+        prefix: '$',
+        icon: Target,
+        color: 'neon-emerald',
+        type: 'animated',
+        target: 'finance' as PageView
+      }
+    ];
+
+    const isCEO = user.accessLevel === 10;
+    const priorityMetric = userPrefs?.criticalMetric || '';
+
+    // Map userPrefs to KPI ID
+    const metricMapping: Record<string, string> = {
+      'Liquidity Cushion': 'liquidity-cushion',
+      'Total Aged Inventory Value': 'total-aged-inventory-value',
+      'Margin Erosion Rate': 'margin-erosion-rate',
+      'Capital at Risk': 'capital-at-risk'
+    };
+
+    const targetId = metricMapping[priorityMetric];
+    
+    if (isCEO || !targetId) return data;
+
+    // Put priority first
+    const priorityKpi = data.find(k => k.id === targetId);
+    const others = data.filter(k => k.id !== targetId);
+    return priorityKpi ? [priorityKpi, ...others] : data;
+  }, [user.accessLevel, userPrefs, avgLiquidity, totalFrozenVal]);
+
+  const isCEO = user.accessLevel === 10;
+
   return (
     <div className="space-y-8 pb-20">
       
-      {/* 🟦 TOP LEVEL STRATEGIC KPI HUD */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-         <GlassCard className="p-6 border-l-4 border-l-neon-blue bg-neon-blue/[0.02]" onClick={() => onNavigate('inventory')}>
-            <p className="text-[10px] font-black text-gray-500 uppercase mb-2 tracking-[0.2em]">Aggregate Liquidity Index</p>
-            <div className="flex items-end gap-3">
-               <span className="text-4xl font-black font-mono text-white">{avgLiquidity}</span>
-               <span className="text-xs text-neon-emerald mb-2 font-bold flex items-center gap-1">
-                 <ArrowUpRight className="w-3 h-3" /> 2.1%
-               </span>
-            </div>
-         </GlassCard>
-         <GlassCard className="p-6 border-l-4 border-l-neon-pink bg-neon-pink/[0.02]" onClick={() => onNavigate('reports')}>
-            <p className="text-[10px] font-black text-gray-500 uppercase mb-2 tracking-[0.2em]">Capital Frozen In Aging SKUs</p>
-            <AnimatedCounter value={totalFrozenVal} prefix="$" className="text-2xl font-black text-white tracking-tighter" />
-         </GlassCard>
-         <GlassCard className="p-6 border-l-4 border-l-white bg-white/[0.02]" onClick={() => onNavigate('marketplaces')}>
-            <p className="text-[10px] font-black text-gray-500 uppercase mb-2 tracking-[0.2em]">Global Asset Velocity</p>
-            <div className="text-2xl font-black text-white tracking-tighter">4.8<span className="text-sm font-normal text-gray-500 uppercase ml-1">/wk Avg</span></div>
-         </GlassCard>
-         <GlassCard className="p-6 border-l-4 border-l-neon-emerald bg-neon-emerald/[0.02]" onClick={() => onNavigate('finance')}>
-            <p className="text-[10px] font-black text-gray-500 uppercase mb-2 tracking-[0.2em]">Recoverable Yield Target</p>
-            <AnimatedCounter value={totalFrozenVal * 0.45} prefix="$" className="text-2xl font-black text-neon-emerald tracking-tighter" />
-         </GlassCard>
+      {/* 🟦 TOP LEVEL STRATEGIC KPI HUD - REFACTORED FOR DYNAMIC LAYOUT */}
+      <div className={`grid gap-5 ${isCEO ? 'grid-cols-1 md:grid-cols-4' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'}`}>
+        {kpis.map((kpi, idx) => {
+          const isPriority = !isCEO && idx === 0;
+          return (
+            <GlassCard 
+              key={kpi.id} 
+              className={`p-6 border-l-4 border-l-${kpi.color} bg-${kpi.color}/[0.02] ${isPriority ? 'md:col-span-2' : ''}`} 
+              onClick={() => onNavigate(kpi.target)}
+            >
+              <p className="text-[10px] font-black text-gray-500 uppercase mb-2 tracking-[0.2em] flex items-center gap-2">
+                {isPriority && <Zap className="w-3 h-3 text-neon-gold animate-pulse" />}
+                {kpi.label}
+              </p>
+              
+              <div className="flex items-end gap-3">
+                {kpi.type === 'counter' && (
+                  <>
+                    <span className="text-4xl font-black font-mono text-white">{kpi.value}</span>
+                    {kpi.sub && (
+                      <span className="text-xs text-neon-emerald mb-2 font-bold flex items-center gap-1">
+                        <ArrowUpRight className="w-3 h-3" /> {kpi.sub}
+                      </span>
+                    )}
+                  </>
+                )}
+                {kpi.type === 'animated' && (
+                  <AnimatedCounter 
+                    value={Number(kpi.value)} 
+                    prefix={kpi.prefix} 
+                    className={`font-black text-white tracking-tighter ${isPriority ? 'text-4xl' : 'text-2xl'}`} 
+                  />
+                )}
+                {kpi.type === 'static' && (
+                  <div className="text-2xl font-black text-white tracking-tighter">
+                    {kpi.value}
+                    <span className="text-sm font-normal text-gray-500 uppercase ml-1">{kpi.suffix}</span>
+                  </div>
+                )}
+              </div>
+            </GlassCard>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
