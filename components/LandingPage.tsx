@@ -155,7 +155,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigat
          <ProblemSection />
       </section>
 
-      <SmoothSection className="container mx-auto max-w-7xl py-48 px-8 text-center" id="partner">
+      <SmoothSection className="container mx-auto max-w-7xl py-24 px-8 text-center" id="partner">
          <div className="inline-flex p-4 bg-white/5 border border-white/10 rounded mb-8">
             <Activity className="w-6 h-6 text-white" />
          </div>
@@ -171,10 +171,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigat
 
       <DecisionStateSection />
 
-      <section id="calculator" className="py-60 px-6 relative overflow-hidden bg-[#08080a] border-y border-white/5">
+      <section id="calculator" className="py-32 px-6 relative overflow-hidden bg-[#08080a] border-y border-white/5">
          <div className="container mx-auto">
             <SmoothSection>
-               <div className="text-center mb-24 px-4">
+               <div className="text-center mb-20 px-4">
                   <span className="text-neon-gold font-mono text-[10px] tracking-[0.4em] uppercase mb-4 block font-bold">ROI ENGINE</span>
                   <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6 text-white">Quantify Your Opportunity</h2>
                   <p className="text-gray-400 text-lg max-w-xl mx-auto font-medium">Identify the hidden cost of holding stagnant assets.</p>
@@ -190,12 +190,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigat
 
       <RoleSection />
 
-      <section className="py-60 px-8 border-t border-white/5 bg-void">
-        <div className="container mx-auto max-w-7xl space-y-80">
+      <section className="py-32 px-8 border-t border-white/5 bg-void">
+        <div className="container mx-auto max-w-7xl space-y-32">
            
            <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
               <div className="relative">
-                 <div className="relative z-10 bg-[#0c0c10] border border-white/5 rounded-2xl p-12 h-[500px] flex flex-col items-center justify-center overflow-hidden">
+                 <div className="relative z-10 bg-[#0c0c10] border border-white/5 rounded-2xl p-12 h-[450px] flex flex-col items-center justify-center overflow-hidden shadow-2xl">
                     <div className="text-center relative z-10">
                        <div className="text-8xl font-bold text-white leading-none font-mono tracking-tighter">$14,205</div>
                        <div className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-bold mt-8">Revenue Recovered / Daily Average</div>
@@ -233,7 +233,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigat
                  </div>
               </div>
               <div className="order-1 lg:order-2 relative">
-                 <div className="bg-black/20 rounded-2xl p-1 border border-white/5">
+                 <div className="bg-black/20 rounded-2xl p-1 border border-white/5 shadow-2xl">
                     <SyncEngineVisual />
                  </div>
               </div>
