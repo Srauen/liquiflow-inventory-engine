@@ -33,7 +33,7 @@ export const LiquidityCalculator: React.FC<LiquidityCalculatorProps> = ({ onNavi
       <div className="flex flex-col lg:flex-row min-h-[600px]">
         
         {/* Input Console */}
-        <div className="flex-1 p-12 lg:border-r border-white/5 space-y-12">
+        <div className="flex-1 p-8 md:p-12 lg:border-r border-white/5 space-y-12">
           <div className="flex justify-between items-center">
             <h3 className="text-sm font-black uppercase tracking-[0.3em] text-white flex items-center gap-3">
               <Activity className="w-4 h-4 text-neon-blue" />
@@ -109,12 +109,12 @@ export const LiquidityCalculator: React.FC<LiquidityCalculatorProps> = ({ onNavi
         </div>
 
         {/* Output Panel */}
-        <div className="w-full lg:w-[450px] p-16 bg-white text-black flex flex-col justify-between">
+        <div className="w-full lg:w-[450px] p-10 md:p-12 lg:p-16 bg-white text-black flex flex-col justify-between">
           <div className="text-center">
             <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-12">Recoverable Liquidity Forecast</p>
             
-            <div className="relative mb-16">
-               <div className="text-7xl md:text-8xl font-black font-mono tracking-tighter italic">
+            <div className="relative mb-16 overflow-hidden">
+               <div className="text-5xl md:text-6xl lg:text-7xl font-black font-mono tracking-tighter italic break-words flex items-center justify-center">
                  $<AnimatedCounter value={stats.totalPotential} duration={1000} />
                </div>
                <div className="mt-6 text-[10px] font-black text-neon-emerald uppercase tracking-[0.3em] flex items-center justify-center gap-2">
