@@ -11,39 +11,12 @@ export interface Product {
   marketPrice: number;
   stockLevel: number;
   lowStockThreshold: number;
-  velocity: number; // units per week
+  velocity: number;
   daysOnHand: number;
-  seasonalityIndex: number; // 0.1 to 2.0
-  elasticityCoef: number; // negative number
-  liquidityScore: number; // 0-100: Consolidated health metric
+  seasonalityIndex: number;
+  elasticityCoef: number;
+  liquidityScore: number;
   status: 'active' | 'at-risk' | 'liquidating' | 'donated';
-}
-
-export interface SimulationScenario {
-  id: string;
-  name: string;
-  demandMultiplier: number;
-  stockLossFactor: number;
-  description: string;
-}
-
-export interface SimulationResult {
-  newPrice: number;
-  markdownPercent: number;
-  newDemand: number;
-  projectedRevenue: number;
-  demandChangePct: number;
-}
-
-export interface PathRecommendation {
-  value: number;
-  recommended: boolean;
-}
-
-export interface OptimalPath {
-  resale: PathRecommendation;
-  donation: PathRecommendation;
-  bulk: PathRecommendation;
 }
 
 export interface UserPreferences {
@@ -58,6 +31,7 @@ export interface UserPreferences {
   themeColor: 'blue' | 'pink' | 'emerald' | 'violet';
 }
 
+// Added missing Badge interface
 export interface Badge {
   id: string;
   name: string;
@@ -66,22 +40,13 @@ export interface Badge {
   description: string;
 }
 
-export interface Lesson {
-  id: string;
-  title: string;
-  duration: string;
-  xpReward: number;
-  completed: boolean;
-  category: string;
-  content: string;
-}
-
 export interface UserProfile {
   id: string;
   name: string;
-  role: 'Admin' | 'Merchant' | 'Analyst';
+  role: 'Admin' | 'Merchant' | 'Analyst' | 'CEO';
   xp: number;
   level: number;
+  accessLevel: 1 | 2 | 9 | 10; // 1: Guest, 2: Operator, 9: Admin, 10: CEO
   nextLevelXp: number;
   streakDays: number;
   badges: Badge[];
@@ -102,4 +67,36 @@ export interface TaxDocument {
   amount: number;
   date: string;
   status: 'Ready' | 'Processing';
+}
+
+// Added missing SimulationResult interface
+export interface SimulationResult {
+  newPrice: number;
+  markdownPercent: number;
+  newDemand: number;
+  projectedRevenue: number;
+  demandChangePct: number;
+}
+
+// Added missing OptimalPath interface and supporting types
+export interface PathRecommendation {
+  value: number;
+  recommended: boolean;
+}
+
+export interface OptimalPath {
+  resale: PathRecommendation;
+  donation: PathRecommendation;
+  bulk: PathRecommendation;
+}
+
+// Added missing Lesson interface
+export interface Lesson {
+  id: string;
+  title: string;
+  duration: string;
+  xpReward: number;
+  completed: boolean;
+  category: string;
+  content: string;
 }

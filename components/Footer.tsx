@@ -12,7 +12,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       <div className="container mx-auto px-6 max-w-7xl grid grid-cols-1 md:grid-cols-4 gap-12">
          
          <div className="col-span-1">
-            <h2 className="text-xl font-bold tracking-tight mb-6">Liquidora</h2>
+            <h2 className="text-xl font-bold tracking-tight mb-6">LiquiFlow</h2>
             <p className="text-gray-500 text-sm leading-relaxed">
                The operating system for modern inventory liquidity.
             </p>
@@ -47,7 +47,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
          </div>
       </div>
       <div className="container mx-auto px-6 max-w-7xl mt-20 pt-8 border-t border-white/5 text-center text-xs text-gray-600 font-mono tracking-wider">
-         © 2025–2026 Liquidora Inc. | Designed & Developed by Srirama Vathsan
+         © 2025–2026 LiquiFlow Inc. | Designed & Developed by Srirama Vathsan
       </div>
     </footer>
   );

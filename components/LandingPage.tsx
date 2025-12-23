@@ -22,8 +22,17 @@ interface LandingPageProps {
   onNavigate: (page: PageView) => void;
 }
 
+const LOGO_GRADIENTS = [
+  'from-neon-blue via-neon-violet to-neon-pink',
+  'from-neon-emerald via-neon-blue to-neon-violet',
+  'from-neon-gold via-orange-500 to-red-500',
+  'from-cyan-400 via-blue-500 to-indigo-600',
+  'from-pink-500 via-rose-500 to-orange-400'
+];
+
 export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigate }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [logoGradient, setLogoGradient] = useState(LOGO_GRADIENTS[0]);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -36,6 +45,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigat
     window.addEventListener('scroll', updateScroll);
     return () => window.removeEventListener('scroll', updateScroll);
   }, []);
+
+  const handleLogoHover = () => {
+    const remaining = LOGO_GRADIENTS.filter(g => g !== logoGradient);
+    const next = remaining[Math.floor(Math.random() * remaining.length)];
+    setLogoGradient(next);
+  };
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -54,9 +69,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigat
         }`}
       >
         <div className="container mx-auto px-8 flex justify-between items-center max-w-7xl">
-          <div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="w-8 h-8 bg-white text-black rounded flex items-center justify-center font-bold text-lg tracking-tighter">L</div>
-            <span className="font-bold text-sm tracking-tight uppercase text-white">Liquidora</span>
+          <div 
+            className="flex items-center gap-3 group cursor-pointer" 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onMouseEnter={handleLogoHover}
+          >
+            <div className={`w-8 h-8 bg-white text-black rounded flex items-center justify-center font-bold text-lg tracking-tighter transition-all duration-500 group-hover:bg-gradient-to-br group-hover:${logoGradient} group-hover:text-white group-hover:rotate-[360deg]`}>L</div>
+            <span className="font-bold text-sm tracking-tight uppercase text-white transition-colors duration-300 group-hover:text-neon-blue">LiquiFlow</span>
           </div>
           <div className="hidden lg:flex items-center gap-10 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">
             <button onClick={() => scrollTo('problem')} className="hover:text-white transition-colors">Economics</button>
@@ -142,7 +161,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp, onNavigat
          </div>
          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-8 text-white max-w-4xl mx-auto">Your AI-Powered Liquidity Partner</h2>
          <p className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-2xl mx-auto font-medium">
-            Liquidora transforms static inventory data into active capital flow. By connecting directly to your ERP, we identify friction before it impacts your bottom line.
+            LiquiFlow transforms static inventory data into active capital flow. By connecting directly to your ERP, we identify friction before it impacts your bottom line.
          </p>
       </SmoothSection>
 

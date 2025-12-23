@@ -1,10 +1,12 @@
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, Box, BrainCircuit, Banknote, 
   Workflow, Settings, LogOut, Shield, 
-  Hexagon, User, Menu, X, Bell, Cable, FileText, Search, FlaskConical
+  Hexagon, User, Menu, X, Bell, Cable, FileText, Search, FlaskConical,
+  Grid3X3, Zap, Target, TrendingUp, Globe, Database, Cpu, Command,
+  Terminal, Share2, Scan, Activity, Network
 } from 'lucide-react';
 import { UserProfile } from '../../types';
 import { NotificationPanel } from '../ui/NotificationPanel';
@@ -20,18 +22,41 @@ interface AppLayoutProps {
   isSandbox: boolean;
 }
 
+const LOGO_GRADIENTS = [
+  'from-neon-blue via-neon-violet to-neon-pink',
+  'from-neon-emerald via-neon-blue to-neon-violet',
+  'from-neon-gold via-orange-500 to-red-500'
+];
+
+interface NavItemData {
+  id: string;
+  label: string;
+  icon: any;
+  level?: number;
+  hideIfCEO?: boolean;
+}
+
+// Added missing MenuGroup interface to fix type inference errors in menuGroups array
+interface MenuGroup {
+  title: string;
+  level: number;
+  items: NavItemData[];
+}
+
 const NavItem = ({ icon: Icon, label, id, active, onClick }: any) => (
-  <button
+  <motion.button
+    layout
     onClick={() => onClick(id)}
-    className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all mb-1 ${
+    whileHover={{ x: 4 }}
+    className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl transition-all mb-1 ${
       active 
-      ? 'bg-neon-blue/10 text-neon-blue border-r-2 border-neon-blue' 
-      : 'text-gray-400 hover:text-white hover:bg-white/5'
+      ? 'bg-neon-blue/10 text-neon-blue border-r-2 border-neon-blue shadow-[inset_0_0_20px_rgba(0,240,255,0.05)]' 
+      : 'text-gray-500 hover:text-white hover:bg-white/5'
     }`}
   >
-    <Icon className="w-4 h-4" />
-    <span className="font-mono text-[11px] uppercase tracking-wider">{label}</span>
-  </button>
+    <Icon className={`w-4 h-4 ${active ? 'animate-pulse' : ''}`} />
+    <span className="font-mono text-[9px] uppercase tracking-wider font-black">{label}</span>
+  </motion.button>
 );
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ 
@@ -39,83 +64,128 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [notifPanelOpen, setNotifPanelOpen] = React.useState(false);
+  const [logoGradient, setLogoGradient] = useState(LOGO_GRADIENTS[0]);
 
-  const menuGroups = [
+  const handleLogoHover = () => {
+    const next = LOGO_GRADIENTS[(LOGO_GRADIENTS.indexOf(logoGradient) + 1) % LOGO_GRADIENTS.length];
+    setLogoGradient(next);
+  };
+
+  // Fixed: Explicitly typed menuGroups as MenuGroup[] to ensure NavItemData properties like 'level' and 'hideIfCEO' are recognized
+  const menuGroups: MenuGroup[] = [
+    {
+      title: "STRATEGIC CORE",
+      level: 10,
+      items: [
+        { id: 'strategic-oversight', label: 'Command Matrix', icon: Command },
+        { id: 'dashboard', label: 'Global Telemetry', icon: Activity },
+      ]
+    },
+    {
+      title: "INTELLIGENCE",
+      level: 10,
+      items: [
+        { id: 'neural-data', label: 'Neural Data Lake', icon: Database },
+        { id: 'ai-center', label: 'Strategic Lab', icon: BrainCircuit },
+      ]
+    },
+    {
+      title: "INFRASTRUCTURE",
+      level: 10,
+      items: [
+        { id: 'market-ops', label: 'Market Ops', icon: Globe },
+        { id: 'system-kernel', label: 'System Kernel', icon: Terminal },
+      ]
+    },
     {
       title: "OPERATIONS",
+      level: 1,
       items: [
-        { id: 'dashboard', label: 'Command Center', icon: LayoutDashboard },
-        { id: 'inventory', label: 'Inventory Engine', icon: Box },
-        { id: 'ai-center', label: 'Strategic Lab', icon: BrainCircuit },
-        { id: 'marketplaces', label: 'Omnichannel Hub', icon: Hexagon },
+        { id: 'dashboard', label: 'Command Center', icon: LayoutDashboard, level: 1, hideIfCEO: true },
+        { id: 'inventory', label: 'Inventory Engine', icon: Box, level: 2 },
+        { id: 'marketplaces', label: 'Omnichannel Hub', icon: Hexagon, level: 2 },
       ]
     },
     {
       title: "CAPITAL EFFICIENCY",
+      level: 1,
       items: [
-        { id: 'automation', label: 'Exit Automations', icon: Workflow },
-        { id: 'finance', label: 'Finance & Tax', icon: Banknote },
-        { id: 'reports', label: 'Liquidity Audits', icon: FileText },
+        { id: 'automation', label: 'Exit Automations', icon: Workflow, level: 2 },
+        { id: 'finance', label: 'Finance & Tax', icon: Banknote, level: 1 },
+        { id: 'reports', label: 'Liquidity Audits', icon: FileText, level: 1 },
       ]
     },
     {
-      title: "SYSTEM",
+      title: "ADMINISTRATION",
+      level: 9,
       items: [
-        { id: 'integrations', label: 'Integrations', icon: Cable },
         { id: 'admin', label: 'Access Control', icon: Shield },
+        { id: 'integrations', label: 'Integrations', icon: Cable },
         { id: 'settings', label: 'Configuration', icon: Settings },
       ]
     }
   ];
 
   return (
-    <div className="min-h-screen bg-[#0f0f13] flex relative overflow-hidden">
-      <div className="fixed inset-0 pointer-events-none">
+    <div className="min-h-screen bg-[#050507] flex relative overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none opacity-20">
         <div className="scanlines"></div>
       </div>
 
-      <NotificationPanel 
-        isOpen={notifPanelOpen} 
-        onClose={() => setNotifPanelOpen(false)} 
-        notifications={notifications} 
-      />
+      <NotificationPanel isOpen={notifPanelOpen} onClose={() => setNotifPanelOpen(false)} notifications={notifications} />
 
       <motion.aside 
+        layout
         initial={{ x: -280 }}
         animate={{ x: 0 }} 
-        className={`fixed md:relative z-50 w-64 h-screen bg-black/90 backdrop-blur-xl border-r border-white/5 flex flex-col ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} transition-transform duration-300`}
+        className={`fixed md:relative z-50 w-64 h-screen bg-black/90 backdrop-blur-3xl border-r border-white/5 flex flex-col ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} transition-transform duration-500`}
       >
         <div className="p-6 border-b border-white/5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-neon-blue rounded flex items-center justify-center">
-               <span className="font-bold font-mono text-lg text-black">L</span>
+          <div className="flex items-center gap-3 group cursor-pointer" onClick={() => onNavigate('dashboard')} onMouseEnter={handleLogoHover}>
+            <div className={`w-9 h-9 bg-neon-blue rounded-lg flex items-center justify-center transition-all duration-700 group-hover:bg-gradient-to-tr group-hover:${logoGradient} group-hover:rotate-[360deg] shadow-[0_0_25px_rgba(0,240,255,0.1)] group-hover:shadow-[0_0_35px_rgba(140,30,255,0.3)]`}>
+               <span className="font-black font-mono text-lg text-black group-hover:text-white">L</span>
             </div>
-            <h1 className="font-bold tracking-tighter text-white">LiquiFlow</h1>
+            <h1 className="font-black tracking-tighter text-md text-white group-hover:text-neon-blue transition-colors">LiquiFlow</h1>
           </div>
-          <button onClick={() => setMobileMenuOpen(false)} className="md:hidden text-gray-400"><X /></button>
         </div>
 
-        <div className="flex-1 overflow-y-auto py-6 px-3 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar">
           <nav className="space-y-6">
-            {menuGroups.map((group, idx) => (
-              <div key={idx}>
-                <h3 className="px-4 text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 font-mono">{group.title}</h3>
+            {menuGroups
+              .filter(group => user.accessLevel >= group.level)
+              .map((group, idx) => (
+              <motion.div 
+                layout 
+                key={idx}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.1 }}
+              >
+                <h3 className="px-4 text-[8px] font-black text-gray-700 uppercase tracking-[0.4em] mb-3 font-mono">{group.title}</h3>
                 <div className="space-y-0.5">
-                  {group.items.map(item => (
+                  {group.items
+                    .filter(item => (!item.level || user.accessLevel >= item.level))
+                    .filter(item => !(item.hideIfCEO && user.accessLevel === 10))
+                    .map(item => (
                     <NavItem key={item.id} {...item} active={activePage === item.id} onClick={(id: any) => { onNavigate(id); setMobileMenuOpen(false); }} />
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </nav>
         </div>
 
-        <div className="p-4 border-t border-white/5">
-           <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg mb-4">
-             <div className="w-8 h-8 rounded bg-gray-800 flex items-center justify-center"><User className="w-4 h-4 text-gray-400" /></div>
+        <div className="p-5 border-t border-white/5 bg-black/40">
+           <div className="flex items-center gap-3 p-3 bg-white/[0.02] rounded-xl mb-4 border border-white/5 group hover:border-white/10 transition-colors">
+             <div className={`w-9 h-9 rounded-lg bg-gray-900 flex items-center justify-center transition-all ${user.accessLevel === 10 ? 'border border-neon-violet shadow-[0_0_12px_rgba(140,30,255,0.2)]' : ''}`}>
+                <User className={`w-4 h-4 ${user.accessLevel === 10 ? 'text-neon-violet' : 'text-gray-500'}`} />
+             </div>
              <div className="min-w-0">
-                <p className="text-xs font-bold truncate text-white">{user.name}</p>
-                <p className="text-[9px] text-gray-500 uppercase tracking-wider">{user.role}</p>
+                <p className="text-xs font-black truncate text-white uppercase tracking-tight">{user.name}</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                   <Shield className={`w-2.5 h-2.5 ${user.accessLevel === 10 ? 'text-neon-violet' : user.accessLevel === 9 ? 'text-neon-pink' : 'text-neon-blue'}`} />
+                   <p className="text-[8px] text-gray-500 uppercase tracking-widest font-black">LVL {user.accessLevel} // {user.role}</p>
+                </div>
              </div>
           </div>
           <NavItem icon={LogOut} label="Disconnect" id="logout" active={false} onClick={onLogout} />
@@ -123,35 +193,31 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       </motion.aside>
 
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
-        <header className="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-black/40 backdrop-blur z-40">
+        <header className="h-16 border-b border-white/5 flex items-center justify-between px-8 bg-black/40 backdrop-blur-xl z-40">
            <div className="flex items-center gap-4">
               <button onClick={() => setMobileMenuOpen(true)} className="md:hidden text-white"><Menu /></button>
-              
-              <button 
-                onClick={onToggleSandbox}
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-full border transition-all font-bold text-[10px] tracking-widest ${
-                  isSandbox ? 'bg-neon-violet border-neon-violet' : 'border-white/10 hover:border-neon-violet'
-                }`}
-              >
-                <FlaskConical className={`w-3.5 h-3.5 ${isSandbox ? 'animate-pulse' : ''}`} />
-                {isSandbox ? 'SANDBOX ACTIVE' : 'OPEN LIQUIDITY SANDBOX™'}
-              </button>
+              {user.accessLevel >= 2 && (
+                <button onClick={onToggleSandbox} className={`flex items-center gap-2 px-4 py-1.5 rounded-full border transition-all font-black text-[9px] tracking-[0.2em] ${isSandbox ? 'bg-neon-violet border-neon-violet shadow-[0_0_20px_rgba(140,30,255,0.3)] text-white' : 'border-white/10 text-gray-400 hover:border-neon-violet hover:text-white'}`}>
+                  <FlaskConical className={`w-3.5 h-3.5 ${isSandbox ? 'animate-bounce' : ''}`} />
+                  {isSandbox ? 'SANDBOX ACTIVE' : 'OPEN LIQUIDITY SANDBOX™'}
+                </button>
+              )}
            </div>
 
            <div className="flex items-center gap-6">
-              <div className="hidden md:block relative w-64">
-                 <Search className="absolute left-3 top-2.5 w-3.5 h-3.5 text-gray-600" />
-                 <input type="text" placeholder="GLOBAL SKILL SEARCH..." className="w-full bg-white/5 border border-white/10 rounded py-1.5 pl-9 text-[10px] font-mono focus:border-neon-blue outline-none" />
+              <div className="hidden lg:flex items-center gap-4 text-[8px] font-mono font-black text-gray-600 uppercase tracking-widest">
+                 <div className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-neon-emerald animate-pulse" /> Consensus: Valid</div>
+                 <div className="w-px h-3 bg-white/10 mx-1" />
+                 <div className="flex items-center gap-1.5"><Cpu className="w-2.5 h-2.5" /> Ops: Stable</div>
               </div>
-
-              <button onClick={() => setNotifPanelOpen(true)} className="relative p-2 text-gray-500 hover:text-white transition-colors">
-                 <Bell className="w-4.5 h-4.5" />
-                 {notifications.length > 0 && <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-neon-pink rounded-full"></span>}
+              <button onClick={() => setNotifPanelOpen(true)} className="relative p-2.5 text-gray-500 hover:text-white transition-colors bg-white/[0.02] rounded-lg border border-white/5">
+                 <Bell className="w-4 h-4" />
+                 {notifications.length > 0 && <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-neon-pink rounded-full shadow-[0_0_8px_#FF2975]"></span>}
               </button>
            </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar relative">
            {children}
         </div>
       </main>

@@ -7,6 +7,7 @@ export const MOCK_USER: UserProfile = {
   role: 'Merchant',
   xp: 4500,
   level: 4,
+  accessLevel: 2, // Default to Operational
   nextLevelXp: 5000,
   streakDays: 12,
   badges: [
