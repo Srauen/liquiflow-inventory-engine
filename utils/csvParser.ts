@@ -1,12 +1,12 @@
 
 export interface InventoryItem {
   sku: string;
-  title: string;
-  cost_price: number;
-  selling_price: number;
-  qty_on_hand: number;
-  category: string;
-  __errors?: string[]; // Internal validation flags
+  product_name: string;
+  unit_cost: number;
+  quantity_on_hand: number;
+  liquidity_index: number;
+  status: string;
+  __errors?: string[]; 
 }
 
 export const parseCSV = async (file: File): Promise<InventoryItem[]> => {
@@ -21,7 +21,7 @@ export const parseCSV = async (file: File): Promise<InventoryItem[]> => {
         return;
       }
 
-      // Normalize headers
+      // Normalize headers: remove quotes, spaces to underscores, lowercase
       const headers = lines[0].split(',').map(h => 
         h.trim().toLowerCase().replace(/['"]+/g, '').replace(/\s+/g, '_')
       );
@@ -30,51 +30,43 @@ export const parseCSV = async (file: File): Promise<InventoryItem[]> => {
 
       for (let i = 1; i < lines.length; i++) {
         const currentLine = lines[i].split(',');
-        // Skip empty rows
         if (currentLine.length < 2) continue;
 
-        const item: any = {};
-        const errors: string[] = [];
-
+        const item: any = {
+          sku: '',
+          product_name: '',
+          unit_cost: 0,
+          quantity_on_hand: 0,
+          liquidity_index: 50,
+          status: 'active'
+        };
+        
         headers.forEach((header, index) => {
-          let value = currentLine[index]?.trim();
-          if (!value) return;
-          
-          // Sanitization: Remove quotes
-          value = value.replace(/['"]+/g, '');
+          let value = currentLine[index]?.trim() || '';
+          value = value.replace(/['"]+/g, ''); // Sanitization
 
-          // Schema Mapping
           if (header === 'sku') item.sku = value;
-          if (header === 'title' || header === 'name' || header === 'product_name') item.title = value;
-          if (header === 'category') item.category = value;
+          if (header === 'product_name' || header === 'title' || header === 'name') item.product_name = value;
           
-          // Numeric Parsing
-          if (header.includes('cost')) {
-            item.cost_price = parseFloat(value.replace(/[^0-9.-]+/g,""));
+          // Numerical Integrity: strip currency symbols and commas
+          const numericValue = value.replace(/[^0-9.-]+/g, "");
+          const parsedNum = parseFloat(numericValue);
+          
+          if (header === 'unit_cost' || header.includes('cost')) {
+            item.unit_cost = isNaN(parsedNum) ? 0 : parsedNum;
           }
-          if (header.includes('selling') || header.includes('price')) {
-            item.selling_price = parseFloat(value.replace(/[^0-9.-]+/g,""));
+          if (header === 'quantity_on_hand' || header.includes('qty') || header.includes('on_hand')) {
+            item.quantity_on_hand = isNaN(parsedNum) ? 0 : Math.floor(parsedNum);
           }
-          if (header.includes('qty') || header.includes('quantity') || header.includes('on_hand')) {
-            item.qty_on_hand = parseInt(value.replace(/[^0-9-]+/g,""), 10);
+          if (header === 'liquidity_index' || header.includes('liquidity')) {
+            item.liquidity_index = isNaN(parsedNum) ? 50 : Math.min(100, Math.max(0, parsedNum));
+          }
+          if (header === 'status') {
+            item.status = value.toLowerCase() || 'active';
           }
         });
 
-        // Default values if missing
-        if (!item.selling_price) item.selling_price = 0;
-        if (!item.category) item.category = 'Uncategorized';
-
-        // Validation Logic
-        if (!item.sku) errors.push('Missing SKU');
-        if (isNaN(item.cost_price) || item.cost_price < 0) errors.push('Invalid Cost');
-        if (isNaN(item.qty_on_hand) || item.qty_on_hand < 0) errors.push('Invalid Quantity');
-
-        if (errors.length > 0) {
-          item.__errors = errors;
-        }
-
-        // Only add if it has at least some data
-        if (item.sku || item.title) {
+        if (item.sku || item.product_name) {
           items.push(item as InventoryItem);
         }
       }

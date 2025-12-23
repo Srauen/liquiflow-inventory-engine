@@ -1,4 +1,5 @@
 
+// Update Product status union to include 'overstock' and 'low-stock' as used in the UI
 export interface Product {
   id: string;
   name: string;
@@ -16,7 +17,7 @@ export interface Product {
   seasonalityIndex: number;
   elasticityCoef: number;
   liquidityScore: number;
-  status: 'active' | 'at-risk' | 'liquidating' | 'donated';
+  status: 'active' | 'at-risk' | 'liquidating' | 'donated' | 'overstock' | 'low-stock';
 }
 
 export interface UserPreferences {

@@ -3,7 +3,7 @@ import React, { useState, useMemo, useRef } from 'react';
 import { 
   Search, TrendingUp, RefreshCw, Wand2, Info,
   TrendingDown, MoreVertical, Settings2, ArrowRight,
-  Upload, Database, Check, AlertCircle, X, ChevronDown, Loader2
+  Upload, Database, Check, AlertCircle, X, ChevronDown, Loader2, Download, FileText, Zap, ShieldAlert
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GlassCard } from '../ui/GlassCard';
@@ -26,8 +26,11 @@ export const Inventory: React.FC<InventoryProps> = ({ products, setProducts, add
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   
+  // Ingest Modal State
+  const [showIngestModal, setShowIngestModal] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+
   // Bulk Actions
-  const [showBulkConsole, setShowBulkConsole] = useState(false);
   const [bulkPricePct, setBulkPricePct] = useState(0);
   const [bulkStockAdj, setBulkStockAdj] = useState(0);
 
@@ -44,33 +47,58 @@ export const Inventory: React.FC<InventoryProps> = ({ products, setProducts, add
     return matchesSearch && matchesHealth;
   }), [products, searchTerm, filterHealth]);
 
+  const downloadTemplate = () => {
+    const headers = "sku,product_name,unit_cost,quantity_on_hand,liquidity_index,status\n";
+    const example = "SNK-2077-NEON,Cyberrunner 2077 Sneakers,120.00,1500,88,overstock\nACC-VIS-G3,Holo-Visor Gen 3,55.00,8500,42,overstock\nHW-CPU-QCORE,Quantum Core Processor,499.00,300,94,active";
+    const blob = new Blob([headers + example], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'LIQUIFLOW_SCHEMA_TEMPLATE.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+    addNotification('Template Ready', 'Downloaded SCHEMA_TEMPLATE.csv for bulk ingestion.', 'info');
+  };
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      try {
-        const items = await parseCSV(file);
-        const newProducts: Product[] = items.map((item, idx) => ({
-          id: `csv-${Date.now()}-${idx}`,
-          name: item.title,
-          sku: item.sku,
-          category: item.category,
-          imageUrl: 'https://images.unsplash.com/photo-1555527833-2863920959f2?auto=format&fit=crop&w=400&q=80',
-          costBasis: item.cost_price,
-          marketPrice: item.selling_price,
-          stockLevel: item.qty_on_hand,
-          lowStockThreshold: Math.floor(item.qty_on_hand * 0.1),
-          velocity: 1.0,
-          daysOnHand: 90,
-          seasonalityIndex: 1.0,
-          elasticityCoef: -1.5,
-          liquidityScore: 50,
-          status: 'active'
-        }));
-        setProducts(prev => [...newProducts, ...prev]);
-        addNotification('Bulk Ingest Complete', `Imported ${newProducts.length} items from CSV.`, 'success');
-      } catch (err) {
-        addNotification('Ingest Error', 'Failed to parse CSV file structure.', 'alert');
-      }
+    if (!file) return;
+
+    setIsImporting(true);
+    try {
+      const items = await parseCSV(file);
+      const newProducts: Product[] = items.map((item, idx) => ({
+        id: item.sku || `csv-${Date.now()}-${idx}`,
+        name: item.product_name,
+        sku: item.sku,
+        category: 'Imported',
+        imageUrl: 'https://images.unsplash.com/photo-1555527833-2863920959f2?auto=format&fit=crop&w=400&q=80',
+        costBasis: item.unit_cost,
+        marketPrice: item.unit_cost * 1.5, // Estimated market price
+        stockLevel: item.quantity_on_hand,
+        lowStockThreshold: Math.floor(item.quantity_on_hand * 0.1),
+        velocity: item.liquidity_index / 10,
+        daysOnHand: 90,
+        seasonalityIndex: 1.0,
+        elasticityCoef: -1.5,
+        liquidityScore: item.liquidity_index,
+        status: (['active', 'low-stock', 'overstock', 'at-risk'].includes(item.status) ? item.status : 'active') as any
+      }));
+
+      setProducts(prev => {
+        const productMap = new Map(prev.map(p => [p.sku, p]));
+        // SKU-based Deduplication: overwrite if SKU exists
+        newProducts.forEach(np => productMap.set(np.sku, np));
+        return Array.from(productMap.values());
+      });
+
+      addNotification('Protocol Executed', `Deduplicated and merged ${newProducts.length} records.`, 'success');
+      setShowIngestModal(false);
+    } catch (err) {
+      addNotification('Ingest Failure', 'CSV structure non-compliant with System Protocol.', 'alert');
+    } finally {
+      setIsImporting(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -96,7 +124,6 @@ export const Inventory: React.FC<InventoryProps> = ({ products, setProducts, add
       return p;
     }));
     setSelectedIds(new Set());
-    setShowBulkConsole(false);
     addNotification('Batch Complete', 'Applied adjustments to selected SKUs.', 'success');
   };
 
@@ -114,10 +141,85 @@ export const Inventory: React.FC<InventoryProps> = ({ products, setProducts, add
     }
   };
 
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'active': return 'bg-neon-emerald/10 text-neon-emerald border-neon-emerald/20';
+      case 'overstock': return 'bg-neon-blue/10 text-neon-blue border-neon-blue/20';
+      case 'at-risk': return 'bg-neon-pink/10 text-neon-pink border-neon-pink/20';
+      case 'low-stock': return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+      default: return 'bg-white/5 text-gray-500 border-white/10';
+    }
+  };
+
   return (
     <div className="space-y-6">
       <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".csv" className="hidden" />
       
+      {/* 🟦 SYSTEM INGESTION MODAL */}
+      <AnimatePresence>
+        {showIngestModal && (
+          <div className="fixed inset-0 z-[250] flex items-center justify-center bg-black/90 backdrop-blur-md p-6">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-xl"
+            >
+              <GlassCard className="p-10 border-neon-blue shadow-[0_0_50px_rgba(0,240,255,0.1)]">
+                <div className="flex justify-between items-center mb-8">
+                  <div className="flex items-center gap-3">
+                    <ShieldAlert className="text-neon-blue w-8 h-8" />
+                    <h2 className="text-2xl font-black uppercase tracking-tighter">System Ingestion Protocol</h2>
+                  </div>
+                  <button onClick={() => setShowIngestModal(false)} className="text-gray-500 hover:text-white transition-colors">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <div className="space-y-6 text-gray-400 text-xs leading-relaxed font-mono mb-10">
+                  <p>To ensure accurate financial valuation and liquidity indexing, please adhere to the following data schema requirements:</p>
+                  <ul className="space-y-4">
+                    <li className="flex gap-4">
+                      <div className="w-1.5 h-1.5 rounded-full bg-neon-blue mt-1.5 shrink-0" />
+                      <p><span className="text-white font-bold">Numerical Integrity:</span> Use raw numbers only for unit_cost and quantity (e.g., 1250.50, not $1,250.50).</p>
+                    </li>
+                    <li className="flex gap-4">
+                      <div className="w-1.5 h-1.5 rounded-full bg-neon-blue mt-1.5 shrink-0" />
+                      <p><span className="text-white font-bold">Unique Identifiers:</span> Every item must have a unique SKU to prevent duplicate "ghost" entries.</p>
+                    </li>
+                    <li className="flex gap-4">
+                      <div className="w-1.5 h-1.5 rounded-full bg-neon-blue mt-1.5 shrink-0" />
+                      <p><span className="text-white font-bold">Liquidity Metric:</span> Enter an integer between 0-100 based on your 30-day sales velocity.</p>
+                    </li>
+                    <li className="flex gap-4">
+                      <div className="w-1.5 h-1.5 rounded-full bg-neon-blue mt-1.5 shrink-0" />
+                      <p><span className="text-white font-bold">Standardized Status:</span> Use active, low-stock, overstock, or at-risk.</p>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={downloadTemplate}
+                    className="flex items-center justify-center gap-3 py-4 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/5 transition-all text-gray-400 hover:text-white"
+                  >
+                    <Download className="w-4 h-4" /> Download Template
+                  </button>
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isImporting}
+                    className="flex items-center justify-center gap-3 py-4 bg-neon-blue text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_30px_rgba(0,240,255,0.3)]"
+                  >
+                    {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                    Begin Upload
+                  </button>
+                </div>
+              </GlassCard>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* 🟦 FLOATING BULK CONSOLE */}
       <AnimatePresence>
         {selectedIds.size > 0 && (
@@ -164,11 +266,11 @@ export const Inventory: React.FC<InventoryProps> = ({ products, setProducts, add
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-           <h1 className="text-3xl font-bold tracking-tighter uppercase">Inventory Engine</h1>
+           <h1 className="text-3xl font-bold tracking-tighter uppercase italic">Inventory Engine</h1>
            <p className="text-gray-600 text-xs font-mono uppercase mt-1 tracking-[0.2em]">Operational Oversight Node</p>
         </div>
         <div className="flex gap-3">
-           <button onClick={() => fileInputRef.current?.click()} className="px-5 py-2.5 bg-white text-black rounded font-black text-[10px] tracking-widest flex items-center gap-2 hover:bg-neon-blue transition-colors">
+           <button onClick={() => setShowIngestModal(true)} className="px-5 py-2.5 bg-white text-black rounded font-black text-[10px] tracking-widest flex items-center gap-2 hover:bg-neon-blue transition-colors">
               <Upload className="w-3.5 h-3.5" /> BULK INGEST (CSV)
            </button>
            <button onClick={handleERPSync} disabled={isSyncing} className="px-5 py-2.5 bg-white/5 border border-white/10 rounded font-bold text-[10px] tracking-widest flex items-center gap-2 hover:bg-white/10 transition-colors disabled:opacity-50">
@@ -208,7 +310,6 @@ export const Inventory: React.FC<InventoryProps> = ({ products, setProducts, add
                <tbody className="divide-y divide-white/5">
                   {filteredProducts.map((p) => {
                   const healthLabel = p.stockLevel > p.lowStockThreshold * 5 ? 'Overstock' : p.stockLevel < p.lowStockThreshold ? 'Low Stock' : 'Healthy';
-                  const healthColor = healthLabel === 'Healthy' ? 'text-neon-emerald' : healthLabel === 'Low Stock' ? 'text-neon-pink' : 'text-neon-blue';
                   
                   return (
                   <tr key={p.id} className={`hover:bg-white/5 transition-colors group ${selectedIds.has(p.id) ? 'bg-neon-blue/5' : ''}`}>
@@ -223,13 +324,21 @@ export const Inventory: React.FC<InventoryProps> = ({ products, setProducts, add
                         <div className="flex items-center gap-4">
                            <div className="relative">
                               <img src={p.imageUrl} className="w-10 h-10 rounded bg-gray-900 border border-white/10 grayscale group-hover:grayscale-0 transition-all" alt="" />
-                              <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-[#121216] ${healthLabel === 'Healthy' ? 'bg-neon-emerald' : healthLabel === 'Low Stock' ? 'bg-neon-pink' : 'bg-neon-blue'}`} />
+                              <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-[#121216] ${
+                                 p.status === 'active' ? 'bg-neon-emerald' : 
+                                 p.status === 'at-risk' ? 'bg-neon-pink' : 
+                                 p.status === 'overstock' ? 'bg-neon-blue' : 'bg-yellow-500'
+                              }`} />
                            </div>
                            <div>
                               <div className="text-[11px] font-black text-white uppercase tracking-tight">{p.name}</div>
                               <div className="flex gap-2 items-center">
                                  <span className="text-[9px] text-gray-600 font-mono">{p.sku}</span>
-                                 <span className={`text-[8px] font-black uppercase ${healthColor}`}>{healthLabel}</span>
+                                 <span className={`text-[8px] font-black uppercase ${
+                                    p.status === 'active' ? 'text-neon-emerald' : 
+                                    p.status === 'at-risk' ? 'text-neon-pink' : 
+                                    p.status === 'overstock' ? 'text-neon-blue' : 'text-yellow-500'
+                                 }`}>{p.status.replace('-', ' ')}</span>
                               </div>
                            </div>
                         </div>
@@ -247,13 +356,11 @@ export const Inventory: React.FC<InventoryProps> = ({ products, setProducts, add
                         </div>
                      </td>
                      <td className="px-6 py-5 text-right font-mono text-[11px]">
-                        <div className="text-white font-black">${(p.marketPrice * p.stockLevel).toLocaleString()}</div>
-                        <div className="text-[9px] text-gray-600 uppercase tracking-tighter">{p.stockLevel} UNITS</div>
+                        <div className="text-white font-black">${(p.costBasis * p.stockLevel).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+                        <div className="text-[9px] text-gray-600 uppercase tracking-tighter">{p.stockLevel.toLocaleString()} UNITS</div>
                      </td>
                      <td className="px-6 py-5">
-                        <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded border ${
-                          p.status === 'active' ? 'border-neon-emerald/20 text-neon-emerald' : 'border-neon-pink/20 text-neon-pink'
-                        }`}>
+                        <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded border ${getStatusStyle(p.status)}`}>
                           {p.status}
                         </span>
                      </td>
@@ -270,7 +377,7 @@ export const Inventory: React.FC<InventoryProps> = ({ products, setProducts, add
       {/* 🟦 AI ENRICHMENT MODAL (Side-by-Side) */}
       <AnimatePresence>
         {showEnrichPreview && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-md p-6">
+          <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/95 backdrop-blur-md p-6">
             <GlassCard className="w-full max-w-6xl h-[85vh] flex flex-col p-10 border-neon-blue shadow-[0_0_100px_rgba(0,240,255,0.15)]">
               <div className="flex justify-between items-center mb-10 shrink-0">
                 <div>
@@ -288,12 +395,10 @@ export const Inventory: React.FC<InventoryProps> = ({ products, setProducts, add
               <div className="flex-1 overflow-y-auto space-y-8 pr-4 custom-scrollbar">
                 {previewItems.map((item, idx) => (
                   <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-10 p-8 bg-white/[0.02] rounded-2xl border border-white/5 relative group">
-                    {/* Comparison Divider */}
                     <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 p-2 bg-void border border-white/10 rounded-full">
                        <ArrowRight className="w-4 h-4 text-neon-blue" />
                     </div>
 
-                    {/* Original */}
                     <div className="opacity-40 grayscale group-hover:grayscale-0 transition-all duration-500">
                       <div className="flex items-center gap-2 mb-4">
                         <div className="w-2 h-2 rounded-full bg-gray-500" />
@@ -303,7 +408,6 @@ export const Inventory: React.FC<InventoryProps> = ({ products, setProducts, add
                       <p className="text-xs text-gray-500 leading-relaxed font-medium">{item.original.description || "No description provided."}</p>
                     </div>
 
-                    {/* Enhanced */}
                     <div className="bg-neon-blue/5 p-6 rounded-xl border border-neon-blue/20">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
