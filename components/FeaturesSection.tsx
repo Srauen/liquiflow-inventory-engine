@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Globe, Truck, FileText, ArrowRight, BrainCircuit, ScanLine, BarChart3, Workflow } from 'lucide-react';
 import { GlassCard } from './ui/GlassCard';
-import { PageView } from '../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../types';
 
 interface FeaturesSectionProps {
   onNavigate: (page: PageView) => void;

@@ -4,11 +4,11 @@ import { motion } from 'framer-motion';
 import { 
   Activity, Zap, Target, DollarSign, Package, 
   ArrowRight, TrendingUp, AlertTriangle, 
-  ArrowUpRight, Shield, Globe, Clock, Box
+  ArrowUpRight, Shield, Globe, Clock, Box, ShieldAlert
 } from 'lucide-react';
 import { GlassCard } from './ui/GlassCard';
-import { Product, UserPreferences, UserProfile } from '../types';
-import { PageView } from '../App';
+// Corrected: Import PageView from types.ts
+import { Product, UserPreferences, UserProfile, PageView } from '../types';
 import { AnimatedCounter } from './ui/AnimatedCounter';
 import { LiquidityNodeGraph } from './pages/LiquidityNodeGraph';
 
@@ -177,7 +177,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
          <div className="lg:col-span-8">
             <GlassCard className="p-0 h-[600px] flex flex-col border-white/5 relative overflow-hidden bg-void/40">
                <div className="absolute top-8 left-8 z-20">
-                  <h3 className="text-xl font-black flex items-center gap-3 uppercase tracking-tighter">
+                  <h3 className="text-xl font-black flex items-center gap-3 uppercase tracking-tighter text-white">
                     <Target className="w-6 h-6 text-neon-emerald" />
                     Capital Flow Pathing
                   </h3>
@@ -199,7 +199,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </div>
                </div>
 
-               {/* New Visualization Component */}
                <div className="flex-1 w-full relative z-10">
                   <LiquidityNodeGraph 
                     products={products} 
@@ -208,13 +207,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   />
                </div>
 
-               {/* Hub Navigation Overlay - Moved lower for legibility */}
                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-4 bg-black/60 backdrop-blur-xl px-6 py-3 rounded-full border border-white/10 shadow-2xl">
                   {[
                     { id: 'inventory', label: 'PRICING', color: 'text-neon-blue' },
                     { id: 'marketplaces', label: 'CHANNELS', color: 'text-neon-emerald' },
                     { id: 'automation', label: 'TIMING', color: 'text-neon-violet' },
-                    { id: 'ai-center', label: 'RISK', color: 'text-neon-pink' }
+                    { id: 'stress-test', label: 'STRESS TEST', color: 'text-[#00FFFF]' }
                   ].map(btn => (
                     <button 
                       key={btn.id}
@@ -231,6 +229,18 @@ export const Dashboard: React.FC<DashboardProps> = ({
          {/* 🟦 RIGHT: INTEL & OPPORTUNITIES */}
          <div className="lg:col-span-4 space-y-6">
             
+            <GlassCard className="p-6 border-white/10 bg-[#FF00FF]/5 hover:bg-[#FF00FF]/10 transition-all cursor-pointer" onClick={() => onNavigate('stress-test')}>
+               <div className="flex items-center justify-between mb-4">
+                  <ShieldAlert className="w-6 h-6 text-[#FF00FF]" />
+                  <div className="px-2 py-0.5 bg-[#FF00FF]/10 rounded border border-[#FF00FF]/20 text-[8px] font-black text-[#FF00FF] uppercase tracking-widest">Action Required</div>
+               </div>
+               <h4 className="text-sm font-black text-white uppercase mb-2">Execute Stress Protocol</h4>
+               <p className="text-[10px] text-gray-400 leading-relaxed font-medium">Model your survival runway against supply chain disruptions and market shocks.</p>
+               <div className="mt-4 flex items-center gap-2 text-[9px] font-mono text-[#00FFFF] uppercase font-bold tracking-widest">
+                  Run Liquidity Sandbox <ArrowRight className="w-3 h-3" />
+               </div>
+            </GlassCard>
+
             <div className="space-y-4">
                <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-2 px-1">Deterministic Intel</h3>
                {CRITICAL_ALERTS.map((alert, i) => (

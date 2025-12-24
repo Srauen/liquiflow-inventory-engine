@@ -8,7 +8,8 @@ import {
   FlaskConical, CheckCircle, Clock, TrendingUp, Cpu,
   Network, ArrowUpRight, BarChart3, Binary, Globe, ShieldCheck, PieChart
 } from 'lucide-react';
-import { PageView } from '../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../types';
 import { GlassCard } from './ui/GlassCard';
 
 export const SmoothSection: React.FC<{ children: React.ReactNode; className?: string; id?: string }> = ({ children, className = "", id }) => (

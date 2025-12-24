@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { PageView } from '../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../types';
 
 interface FooterProps {
   onNavigate: (page: PageView) => void;

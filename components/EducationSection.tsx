@@ -2,7 +2,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { PlayCircle } from 'lucide-react';
-import { PageView } from '../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../types';
 
 const SmoothSection: React.FC<{ children: React.ReactNode; className?: string; delay?: number }> = ({ children, className = "", delay = 0 }) => (
   <motion.div

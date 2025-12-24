@@ -6,7 +6,7 @@ import {
   Workflow, Settings, LogOut, Shield, 
   Hexagon, User, Menu, X, Bell, Cable, FileText, Search, FlaskConical,
   Grid3X3, Zap, Target, TrendingUp, Globe, Database, Cpu, Command,
-  Terminal, Share2, Scan, Activity, Network
+  Terminal, Share2, Scan, Activity, Network, ShieldAlert, BarChart3
 } from 'lucide-react';
 import { UserProfile } from '../../types';
 import { NotificationPanel } from '../ui/NotificationPanel';
@@ -43,14 +43,14 @@ interface MenuGroup {
   items: NavItemData[];
 }
 
-const NavItem = ({ icon: Icon, label, id, active, onClick }: any) => (
+const NavItem = ({ icon: Icon, label, id, active, onClick, colorClass }: any) => (
   <motion.button
     layout
     onClick={() => onClick(id)}
     whileHover={{ x: 4 }}
     className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl transition-all mb-1 ${
       active 
-      ? 'bg-neon-blue/10 text-neon-blue border-r-2 border-neon-blue shadow-[inset_0_0_20px_rgba(0,240,255,0.05)]' 
+      ? `bg-white/5 ${colorClass || 'text-neon-blue'} border-r-2 ${colorClass ? 'border-current' : 'border-neon-blue'} shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]` 
       : 'text-gray-500 hover:text-white hover:bg-white/5'
     }`}
   >
@@ -71,13 +71,13 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
     setLogoGradient(next);
   };
 
-  // Fixed: Explicitly typed menuGroups as MenuGroup[] to ensure NavItemData properties like 'level' and 'hideIfCEO' are recognized
   const menuGroups: MenuGroup[] = [
     {
       title: "STRATEGIC CORE",
       level: 10,
       items: [
         { id: 'strategic-oversight', label: 'Command Matrix', icon: Command },
+        { id: 'stress-test', label: 'Yield Matrix', icon: BarChart3 },
         { id: 'dashboard', label: 'Global Telemetry', icon: Activity },
       ]
     },
@@ -102,6 +102,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       level: 1,
       items: [
         { id: 'dashboard', label: 'Command Center', icon: LayoutDashboard, level: 1, hideIfCEO: true },
+        { id: 'stress-test', label: 'Yield Matrix', icon: BarChart3, level: 10 },
         { id: 'inventory', label: 'Inventory Engine', icon: Box, level: 2 },
         { id: 'marketplaces', label: 'Omnichannel Hub', icon: Hexagon, level: 2 },
       ]
@@ -167,7 +168,13 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
                     .filter(item => (!item.level || user.accessLevel >= item.level))
                     .filter(item => !(item.hideIfCEO && user.accessLevel === 10))
                     .map(item => (
-                    <NavItem key={item.id} {...item} active={activePage === item.id} onClick={(id: any) => { onNavigate(id); setMobileMenuOpen(false); }} />
+                    <NavItem 
+                      key={item.id} 
+                      {...item} 
+                      active={activePage === item.id} 
+                      colorClass={item.id === 'stress-test' ? 'text-[#00FFFF]' : ''}
+                      onClick={(id: any) => { onNavigate(id); setMobileMenuOpen(false); }} 
+                    />
                   ))}
                 </div>
               </motion.div>

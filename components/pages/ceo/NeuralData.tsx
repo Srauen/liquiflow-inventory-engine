@@ -3,7 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Database, Binary, Search, BrainCircuit, Scan, Code, Layers, Share2, Network } from 'lucide-react';
 import { GlassCard } from '../../ui/GlassCard';
-import { PageView } from '../../../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../../../types';
 
 interface NeuralDataProps {
   onNavigate: (page: PageView, data?: any) => void;

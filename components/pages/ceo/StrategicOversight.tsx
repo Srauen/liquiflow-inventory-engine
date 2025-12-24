@@ -3,7 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Command, BarChart3, TrendingUp, Target, Zap, Shield, PieChart, Activity } from 'lucide-react';
 import { GlassCard } from '../../ui/GlassCard';
-import { PageView } from '../../../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../../../types';
 
 interface StrategicOversightProps {
   onNavigate: (page: PageView, data?: any) => void;

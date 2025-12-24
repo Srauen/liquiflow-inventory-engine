@@ -3,7 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Terminal, Cpu, Key, Lock, Shield, Server, Cloud, HardDrive, Zap, Command } from 'lucide-react';
 import { GlassCard } from '../../ui/GlassCard';
-import { PageView } from '../../../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../../../types';
 
 interface SystemKernelProps {
   onNavigate: (page: PageView, data?: any) => void;
@@ -49,9 +50,11 @@ export const SystemKernel: React.FC<SystemKernelProps> = ({ onNavigate }) => {
               </div>
               <h3 className="text-xs font-black uppercase tracking-widest text-white mb-2">{module.label}</h3>
               <p className="text-[10px] text-gray-500 leading-relaxed font-medium mb-6">{module.desc}</p>
-              <div className="mt-auto font-mono text-[8px] text-gray-700 flex flex-col gap-1 uppercase mb-4">
-                 <div className="flex justify-between"><span>Core_ID:</span> <span className="text-neon-emerald">VALID</span></div>
-                 <div className="flex justify-between"><span>Enc_Key:</span> <span className="text-neon-blue">ROTATING</span></div>
+              <div className="mt-auto pt-4 border-t border-white/5 flex justify-between items-center">
+                 <div className="flex flex-col gap-1 font-mono text-[8px] text-gray-700 uppercase">
+                    <div className="flex justify-between gap-2"><span>Core_ID:</span> <span className="text-neon-emerald">VALID</span></div>
+                    <div className="flex justify-between gap-2"><span>Enc_Key:</span> <span className="text-neon-blue">ROTATING</span></div>
+                 </div>
               </div>
               <button 
                 onClick={() => onNavigate('module-detail', module)}

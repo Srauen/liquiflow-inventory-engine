@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, AlertCircle, Settings2, Info, ArrowDownRight, ChevronRight, Activity } from 'lucide-react';
 import { AnimatedCounter } from './ui/AnimatedCounter';
 import { GlassCard } from './ui/GlassCard';
-import { PageView } from '../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../types';
 
 interface LiquidityCalculatorProps {
   onNavigate?: (page: PageView) => void;

@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Globe, RefreshCcw, Loader2, CheckCircle, ShieldCheck, Database, Zap } from 'lucide-react';
 import { GlassCard } from '../ui/GlassCard';
-import { PageView } from '../../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../../types';
 
 interface MarketplaceProps {
   isDemo?: boolean;

@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { Shield, User, MoreVertical, Ban, CheckCircle, Search, Briefcase, Activity, Key, Database, Cable, Settings } from 'lucide-react';
 import { GlassCard } from '../ui/GlassCard';
-import { PageView } from '../../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../../types';
 
 interface AdminProps {
   onNavigate: (page: PageView, data?: any) => void;

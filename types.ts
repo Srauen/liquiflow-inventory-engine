@@ -20,6 +20,12 @@ export interface Product {
   status: 'active' | 'at-risk' | 'liquidating' | 'donated' | 'overstock' | 'low-stock';
 }
 
+export type PageView = 
+  | 'landing' | 'pricing' | 'auth' | 'onboarding'
+  | 'dashboard' | 'inventory' | 'ai-center' | 'marketplaces' | 'finance' | 'automation' | 'admin' | 'settings' | 'simulator'
+  | 'integrations' | 'reports' | 'stress-test'
+  | 'strategic-oversight' | 'neural-data' | 'market-ops' | 'system-kernel' | 'module-detail';
+
 export interface UserPreferences {
   superpower: string;
   customSuperpower?: string;

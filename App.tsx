@@ -16,6 +16,7 @@ import { Settings } from './components/pages/Settings';
 import { Admin } from './components/pages/Admin';
 import { Integrations } from './components/pages/Integrations';
 import { Reports } from './components/pages/Reports';
+import { StressTestSandbox } from './components/pages/StressTestSandbox';
 import { StrategicOversight } from './components/pages/ceo/StrategicOversight';
 import { NeuralData } from './components/pages/ceo/NeuralData';
 import { MarketOperations } from './components/pages/ceo/MarketOperations';
@@ -27,13 +28,7 @@ import { MOCK_PRODUCTS } from './utils/MicroeconomicsEngine';
 import { MOCK_USER, MOCK_WORKFLOWS } from './utils/MockData';
 import { Lock, FlaskConical, Bell, X, CheckCircle, AlertTriangle, Info } from 'lucide-react';
 import { GlassCard } from './components/ui/GlassCard';
-import { Product, Workflow, UserPreferences, UserProfile } from './types';
-
-export type PageView = 
-  | 'landing' | 'pricing' | 'auth' | 'onboarding'
-  | 'dashboard' | 'inventory' | 'ai-center' | 'marketplaces' | 'finance' | 'automation' | 'admin' | 'settings' | 'simulator'
-  | 'integrations' | 'reports' 
-  | 'strategic-oversight' | 'neural-data' | 'market-ops' | 'system-kernel' | 'module-detail';
+import { Product, Workflow, UserPreferences, UserProfile, PageView } from './types';
 
 const App: React.FC = () => {
   const [viewState, setViewState] = useState<PageView>('landing');
@@ -108,7 +103,10 @@ const App: React.FC = () => {
       case 'neural-data': return <NeuralData onNavigate={navigateTo} />;
       case 'market-ops': return <MarketOperations onNavigate={navigateTo} />;
       case 'system-kernel': return <SystemKernel onNavigate={navigateTo} />;
-      case 'module-detail': return <ModuleDetailView module={activeModule} onBack={() => navigateTo('strategic-oversight')} />;
+      case 'stress-test': return <StressTestSandbox />;
+      case 'module-detail': 
+        if (activeModule?.id === 'yield-matrix') return <StressTestSandbox />;
+        return <ModuleDetailView module={activeModule} onBack={() => navigateTo('strategic-oversight')} />;
       case 'simulator': return selectedProduct ? <SkuSimulator product={selectedProduct} onBack={() => navigateTo('dashboard')} /> : null;
       case 'dashboard':
       default: return <Dashboard 

@@ -3,7 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Globe, Truck, Box, Radio, Signal, Eye, EyeOff, Workflow, Target } from 'lucide-react';
 import { GlassCard } from '../../ui/GlassCard';
-import { PageView } from '../../../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../../../types';
 
 interface MarketOperationsProps {
   onNavigate: (page: PageView, data?: any) => void;

@@ -14,7 +14,8 @@ import { TrustSection } from './TrustSection';
 import { EducationSection } from './EducationSection';
 import { LiquidityCalculator } from './LiquidityCalculator';
 import { ComparisonSection } from './ComparisonSection';
-import { PageView } from '../App';
+// Corrected: Import PageView from types.ts
+import { PageView } from '../types';
 import { Footer } from './Footer';
 
 interface LandingPageProps {
